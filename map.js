@@ -1,3 +1,4 @@
+/** @typedef {import('./db/db.js').DbItem} PopUp */
 import { db } from "./db/db.js";
 
 /** @type {L.Map} */
@@ -55,6 +56,62 @@ const addressSearchControl = L.control.addressSearch(
 );
 map.addControl(addressSearchControl);
 
+/**
+ * @param {HTMLElement} list 
+ * @param {PopUp} popup 
+ */
+function createListItem (list, popup) {
+  const distance = popup?.distance?.toFixed(2) || 0;
+  
+  const listItem = document.createElement('li');
+  listItem.innerHTML = (
+    `<b class="name">${popup.title}</b> (<span class="distance">${distance}</span> m)<br>`
+    + `Date: <span class="date">${popup.date?.toLocaleDateString()}</span><br>`
+    + `<div class="sound-bar" data-file="${popup.file}">`
+    + `<button class="play-button">▶️</button>`
+    + `<div class="progress-bar"></div>`
+    + `<div class="duration-label"></div>`
+    + `</div>`
+  );
+  list.appendChild(listItem);
+
+  const playButton = listItem.querySelector('.play-button');
+  const soundBar = listItem.querySelector('.sound-bar');
+  const progressBar = soundBar.querySelector('.progress-bar');
+  const durationLabel = soundBar.querySelector('.duration-label');
+  const audio = new Audio(popup.file);
+
+  playButton.addEventListener('click', function (e) {
+    if (audio.paused) {
+      audio.play();
+      playButton.textContent = '⏸️';
+    } else {
+      audio.pause();
+      playButton.textContent = '▶️';
+    }
+  });
+
+  audio.addEventListener('timeupdate', function () {
+    const progress = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = `${progress}%`;
+  });
+
+  audio.addEventListener('ended', function () {
+    soundBar.style.display = 'none';
+  });
+
+  audio.addEventListener('loadedmetadata', function () {
+    const duration = formatTime(audio.duration);
+    durationLabel.textContent = duration;
+  });
+
+  function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+};
+
 map.on('click', (e) => {
   L.popup()
     .setLatLng(e.latlng)
@@ -62,68 +119,21 @@ map.on('click', (e) => {
     .openOn(map);
   const clickedLatLng = e.latlng;
 
-  const popupDistances = db.map(function (popup) {
+  const popups = db.map(function (popup) {
     const popupLatLng = L.latLng(popup.latlng);
     const distance = clickedLatLng.distanceTo(popupLatLng);
-    return { popup: popup, distance: distance };
+    popup.distance = distance;
+    return popup;
   });
 
-  popupDistances.sort(function (a, b) {
+  popups.sort(function (a, b) {
     return a.distance - b.distance;
   });
 
   const popupList = document.getElementById('popup-list');
   popupList.innerHTML = '';
-  popupDistances.forEach(function (popupDistance) {
-    const popup = popupDistance.popup;
-    const distance = popupDistance.distance.toFixed(2);
-    const listItem = document.createElement('li');
-    listItem.innerHTML = (
-      `<b class="name">${popup.name}</b> (<span class="distance">${distance}</span> m)<br>`
-      + `Date: <span class="date">${popup.date.toLocaleDateString()}</span><br>`
-      + `<div class="sound-bar" data-file="${popup.file}">`
-      + `<button class="play-button">▶️</button>`
-      + `<div class="progress-bar"></div>`
-      + `<div class="duration-label"></div>`
-      + `</div>`
-    );
-    popupList.appendChild(listItem);
-
-    const playButton = listItem.querySelector('.play-button');
-    const soundBar = listItem.querySelector('.sound-bar');
-    const progressBar = soundBar.querySelector('.progress-bar');
-    const durationLabel = soundBar.querySelector('.duration-label');
-    const audio = new Audio(popup.file);
-
-    playButton.addEventListener('click', function (e) {
-      if (audio.paused) {
-        audio.play();
-        playButton.textContent = '⏸️';
-      } else {
-        audio.pause();
-        playButton.textContent = '▶️';
-      }
-    });
-
-    audio.addEventListener('timeupdate', function () {
-      const progress = (audio.currentTime / audio.duration) * 100;
-      progressBar.style.width = `${progress}%`;
-    });
-
-    audio.addEventListener('ended', function () {
-      soundBar.style.display = 'none';
-    });
-
-    audio.addEventListener('loadedmetadata', function () {
-      const duration = formatTime(audio.duration);
-      durationLabel.textContent = duration;
-    });
-
-    function formatTime(time) {
-      const minutes = Math.floor(time / 60);
-      const seconds = Math.floor(time % 60);
-      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
+  popups.forEach(function (popup) {
+    createListItem(popupList, popup);
   });
 
   const sidebar = document.getElementById('sidebar');
@@ -144,10 +154,15 @@ for (const marker of db) {
   const popup = L.marker(marker.latlng)
     .addTo(map)
     .bindPopup(
-      `<b>${marker.name}</b><br>`
+      `<b>${marker.title}</b><br>`
       + `Date: ${marker.date.toLocaleDateString()}`
     );
   popup.on('click', function (e) {
     console.log('popup clicked');
+    const popupList = document.getElementById('popup-list');
+    popupList.innerHTML = '';
+    createListItem(popupList, marker);
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.add('show');
   });
 }
