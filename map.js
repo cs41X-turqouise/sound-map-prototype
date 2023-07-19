@@ -82,26 +82,27 @@ map.on('click', (e) => {
       `<b class="name">${popup.name}</b> (<span class="distance">${distance}</span> m)<br>`
       + `Date: <span class="date">${popup.date.toLocaleDateString()}</span><br>`
       + `<div class="sound-bar" data-file="${popup.file}">`
-      // + `<div class="play-button">▶️</div>` // unsure why this causes soundbar to fail
+      + `<button class="play-button">▶️</button>`
       + `<div class="progress-bar"></div>`
       + `<div class="duration-label"></div>`
       + `</div>`
     );
     popupList.appendChild(listItem);
 
-    // const playButton = listItem.querySelector('.play-button');
+    const playButton = listItem.querySelector('.play-button');
     const soundBar = listItem.querySelector('.sound-bar');
     const progressBar = soundBar.querySelector('.progress-bar');
     const durationLabel = soundBar.querySelector('.duration-label');
     const audio = new Audio(popup.file);
-    
-    soundBar.addEventListener('click', function (e) {
+
+    playButton.addEventListener('click', function (e) {
       if (audio.paused) {
         audio.play();
+        playButton.textContent = '⏸️';
       } else {
         audio.pause();
+        playButton.textContent = '▶️';
       }
-      console.log(`soundBar clicked. Audio is ${audio.paused ? 'paused' : 'playing'}`);
     });
 
     audio.addEventListener('timeupdate', function () {
@@ -122,17 +123,6 @@ map.on('click', (e) => {
       const minutes = Math.floor(time / 60);
       const seconds = Math.floor(time % 60);
       return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
-  });
-
-  popupList.addEventListener('click', function (e) {
-    const target = e.target;
-    if (target.classList.contains('play-button')) {
-      const listItem = target.closest('li');
-      const index = Array.from(popupList.children).indexOf(listItem);
-      const popup = popupDistances[index].popup;
-      const audio = new Audio(popup.file);
-      audio.play();
     }
   });
 

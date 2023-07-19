@@ -62,10 +62,28 @@ main {
   background-color: #eee;
 }
 
+.play-button {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
 .progress-bar {
   position: absolute;
   top: 0;
-  left: 20;
+  left: 25px;
   height: 100%;
   background-color: #007bff;
 }
