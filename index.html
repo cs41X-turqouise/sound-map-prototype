@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sound Map</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Sound Map</h1>
+    </header>
+    <main>
+      <div id="sidebar" class="sidebar">
+        <ul id="popup-list" class="popup-list">
+          <li>
+            <b class="name"></b> (<span class="distance"></span> m)<br>
+            Date: <span class="date"></span><br>
+            <div class="sound-bar">
+              <div class='play-button'></div>
+              <div class="progress-bar"></div>
+              <div class="duration-label"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div id = "map"></div>
+    </main>
+    <footer>
+      <p>&copy; 2023 Sound Map for a Changing Landscape</p>
+    </footer>
+    <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+    <script src="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.js"></script>
+    <script src = "./map.js" type="module"></script>
+  </body>
+</html>
