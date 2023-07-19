@@ -4,35 +4,49 @@ const randDate = () => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
+/**
+ * @typedef {Object} DbItem
+ * @property {string} user
+ * @property {Date} date
+ * @property {string} title
+ * @property {string} [description]
+ * @property {string} file
+ * @property {number[]} latlng
+ */
 export const db = [
   {
-    latlng: [36.82563, -76.16032],
+    user: 'user1',
     date: randDate(),
+    title: 'Test',
     file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-    name: 'Test',
+    latlng: [36.82563, -76.16032],
   },
   {
+    user: 'user1',
+    date: randDate(),
+    title: 'Hello World!',
+    file: '../assets/waves-crashing.wav',
     latlng: [36.88546327183475, -76.30592151771837],
-    date: randDate(),
-    file: '../assets/waves-crashing.wav',
-    name: 'Hello World!',
   },
   {
+    user: 'user2',
+    date: randDate(),
+    title: 'Test2',
+    file: '../assets/waves-crashing.wav',
     latlng: [36.83773, -75.96771],
-    date: randDate(),
-    file: '../assets/waves-crashing.wav',
-    name: 'Test2',
   },
   {
+    user: 'user3',
+    date: randDate(),
+    title: 'Test3',
+    file: '../assets/waves-crashing.wav',
     latlng: [36.69912, -76.22452],
-    date: randDate(),
-    file: '../assets/waves-crashing.wav',
-    name: 'Test3',
   },
   {
-    latlng: [37.01996, -76.32751],
+    user: 'user1',
     date: randDate(),
+    title: 'Test4',
     file: '../assets/waves-crashing.wav',
-    name: 'Test4',
+    latlng: [37.01996, -76.32751],
   },
 ];
