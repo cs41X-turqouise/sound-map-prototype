@@ -4,9 +4,11 @@ import { db } from "./db/db.js";
 /** @type {L.Map} */
 const map = new L.map('map' , {
   center: [36.88546327183475, -76.30592151771837],
+  maxBounds: L.latLngBounds(L.latLng(-90, -180), L.latLng(90, 180)),
   zoom: 10
 });
 
+/** @type {Record<string, L.TileLayer>}*/
 const views = {
   osm: (new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -18,6 +20,22 @@ const views = {
     tileSize: 512,
     zoomOffset: -1,
     accessToken: 'pk.eyJ1IjoidGhlYmd1eSIsImEiOiJjbGpmNnpiZ3QyZDR5M2luNXU2anJsbXp3In0.UP5wSUCUx2mm9j_A2ganfQ'
+  })),
+  satellite: (L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    maxZoom: 18,
+  })),
+  googleSatellite: (L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+  })),
+  googleTerrain: (L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+  })),
+  googleHybrid: (L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
   })),
 };
 
