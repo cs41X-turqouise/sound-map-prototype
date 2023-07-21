@@ -4,6 +4,16 @@ const randDate = () => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
+const randNum = (min = 0, max = 100) => {
+  return Math.floor(Math.random() * (max - min) + min);
+};
+
+function randLatLng() {
+  const lat = (Math.random() * 180) - 90;
+  const lng = (Math.random() * 360) - 180;
+  return [lat, lng];
+}
+
 /**
  * @typedef {Object} DbItem
  * @property {string} user
@@ -50,3 +60,13 @@ export const db = [
     latlng: [37.01996, -76.32751],
   },
 ];
+
+for (let i = 0; i < 100; i++) {
+  db.push({
+    user: `user${randNum()}`,
+    date: randDate(),
+    title: `Test${randNum()}`,
+    file: '../assets/waves-crashing.wav',
+    latlng: randLatLng(),
+  });
+}
