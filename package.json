@@ -14,7 +14,8 @@
     "passport-google-oauth20": "^2.0.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "devDependencies": {
     "eslint": "^8.45.0",
