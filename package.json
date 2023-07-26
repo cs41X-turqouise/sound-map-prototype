@@ -15,5 +15,10 @@
   },
   "scripts": {
     "start": "node server.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react": "^7.33.0"
   }
 }

@@ -1,8 +1,8 @@
 /** @typedef {import('./db/db.js').DbItem} PopUp */
-import { db } from "./db/db.js";
+import { db } from './db/db.js';
 
 /** @type {L.Map} */
-const map = new L.map('map' , {
+const map = new L.Map('map', {
   center: [36.88546327183475, -76.30592151771837],
   maxBounds: L.latLngBounds(L.latLng(-90, -180), L.latLng(90, 180)),
   zoom: 10
@@ -25,17 +25,17 @@ const views = {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     maxZoom: 18,
   })),
-  googleSatellite: (L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+  googleSatellite: (L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     maxZoom: 20,
-    subdomains:['mt0','mt1','mt2','mt3']
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
   })),
-  googleTerrain: (L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+  googleTerrain: (L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
     maxZoom: 20,
-    subdomains:['mt0','mt1','mt2','mt3']
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
   })),
-  googleHybrid: (L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+  googleHybrid: (L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
     maxZoom: 20,
-    subdomains:['mt0','mt1','mt2','mt3']
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
   })),
 };
 
@@ -47,40 +47,40 @@ L.control.locate({ position: 'bottomright' }).addTo(map);
 /** @type {L.Marker} */
 let marker = null;
 const addressSearchControl = L.control.addressSearch(
-  '831a036f042649b889c729791827ea17',
-  {
-    position: 'topright',
-    // set it true to search addresses nearby first
-    mapViewBias: true,
-    placeholder: "Enter an address here",
+    '831a036f042649b889c729791827ea17',
+    {
+      position: 'topright',
+      // set it true to search addresses nearby first
+      mapViewBias: true,
+      placeholder: 'Enter an address here',
 
-    resultCallback: (address) => {
-      if (!address) return;
-      if (marker) {
-        map.removeLayer(marker);
-        marker = null;
+      resultCallback: (address) => {
+        if (!address) return;
+        if (marker) {
+          map.removeLayer(marker);
+          marker = null;
+        }
+
+        // add marker
+        marker = L.marker([address.lat, address.lon]).addTo(map);
+        // Sets the view of the map (geographical center and zoom) with the given animation options.
+        map.setView([address.lat, address.lon], 20);
+      },
+
+      suggestionsCallback: (suggestions) => {
+        console.debug(suggestions);
       }
-        
-      // add marker 
-      marker = L.marker([address.lat, address.lon]).addTo(map);
-      // Sets the view of the map (geographical center and zoom) with the given animation options.
-      map.setView([address.lat, address.lon], 20);
-    },
-
-    suggestionsCallback: (suggestions) => {
-      console.debug(suggestions);
     }
-  }
 );
 map.addControl(addressSearchControl);
 
 /**
- * @param {HTMLElement} list 
- * @param {PopUp} popup 
+ * @param {HTMLElement} list
+ * @param {PopUp} popup
  */
 function createListItem (list, popup) {
   const distance = popup?.distance?.toFixed(2) || 0;
-  
+
   const listItem = document.createElement('li');
   listItem.innerHTML = (
     `<b class="name">${popup.title}</b> (<span class="distance">${distance}</span> m)<br>`
@@ -124,7 +124,11 @@ function createListItem (list, popup) {
     durationLabel.textContent = duration;
   });
 
-  function formatTime(time) {
+  /**
+   * @param {number} time
+   * @return {string}
+   */
+  function formatTime (time) {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
@@ -133,9 +137,9 @@ function createListItem (list, popup) {
 
 map.on('click', (e) => {
   L.popup()
-    .setLatLng(e.latlng)
-    .setContent(`You clicked the map at ${e.latlng.toString()}`)
-    .openOn(map);
+      .setLatLng(e.latlng)
+      .setContent(`You clicked the map at ${e.latlng.toString()}`)
+      .openOn(map);
   const clickedLatLng = e.latlng;
 
   const popups = db.map(function (popup) {
@@ -171,11 +175,11 @@ map.on('popupclose', function () {
 
 for (const marker of db) {
   const popup = L.marker(marker.latlng)
-    .addTo(map)
-    .bindPopup(
-      `<b>${marker.title}</b><br>`
+      .addTo(map)
+      .bindPopup(
+          `<b>${marker.title}</b><br>`
       + `Date: ${marker.date.toLocaleDateString()}`
-    );
+      );
   popup.on('click', function (e) {
     console.log('popup clicked');
     const popupList = document.getElementById('popup-list');
@@ -185,8 +189,8 @@ for (const marker of db) {
     sidebar.classList.add('show');
   });
 }
-window.onload = function() {
-  document.getElementById('login-btn').addEventListener('click', function() {
+window.onload = function () {
+  document.getElementById('login-btn').addEventListener('click', function () {
     // Trigger login action
     window.location.href = '/auth/google'; // This will redirect to the Google login
   });
@@ -200,24 +204,24 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
   // Open the modal
   console.log(document.getElementById('user-avatar'));
-  document.getElementById('user-avatar').addEventListener('click', function() {
+  document.getElementById('user-avatar').addEventListener('click', function () {
     console.log('Avatar clicked');
-    uploadModal.style.display = "block";
+    uploadModal.style.display = 'block';
   });
 
   // Close the modal
-  closeModal.addEventListener('click', function() {
-      uploadModal.style.display = "none";
+  closeModal.addEventListener('click', function () {
+    uploadModal.style.display = 'none';
   });
 
   // File upload
-  
-  fileInput.addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      console.log('File selected:', file);
 
-      //send data to db
+  fileInput.addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    console.log('File selected:', file);
 
-      uploadModal.style.display = "none";
+    // send data to db
+
+    uploadModal.style.display = 'none';
   });
 });

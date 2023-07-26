@@ -8,7 +8,11 @@ const randNum = (min = 0, max = 100) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
 
-function randLatLng() {
+/**
+ * Get random latitude and longitude
+ * @return {[number, number]} [lat, lng]
+ */
+function randLatLng () {
   const lat = (Math.random() * 180) - 90;
   const lng = (Math.random() * 360) - 180;
   return [lat, lng];
