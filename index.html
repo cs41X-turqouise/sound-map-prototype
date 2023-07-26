@@ -9,11 +9,24 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css" />
   </head>
-  <body>
+  <body>    
     <header>
       <h1>Sound Map</h1>
-      <img id="user-avatar" src="./assets/default-avatar.png" alt="User Avatar">
-    </header>
+      <div id="user-area">
+        <img id="user-avatar" src="./assets/default-avatar.png" alt="User Avatar">
+        <button id="login-btn">Login</button>
+      </div>
+    </header>    
+    <!-- Modal -->
+    <div id="uploadModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <h2>Upload MP3</h2>
+        <input id="fileInput" type="file" accept="audio/mp3">
+        <button id="closeModal">Close</button>
+      </div>
+    </div>
+
     <main>
       <div id="sidebar" class="sidebar">
         <ul id="popup-list" class="popup-list">

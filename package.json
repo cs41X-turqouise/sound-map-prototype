@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "@types/leaflet": "^1.9.3"
+    "@types/leaflet": "^1.9.3",
+    "fastify-cookie": "^5.7.0",
+    "fastify-session": "^5.2.1",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0"
   }
 }

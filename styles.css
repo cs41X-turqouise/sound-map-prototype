@@ -118,3 +118,27 @@ footer {
   background-color: #f2f2f2;
   text-align: center;
 }
+
+
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+#login-btn {
+  color: red;
+}
+#user-area {
+  position: absolute; /* Positions this div relative to the header */
+  top: 0px;  
+  right: 0px;  
+  display: flex;
+  align-items: center; 
+  gap: 0px; 
+}
+
+

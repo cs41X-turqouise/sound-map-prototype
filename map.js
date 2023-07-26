@@ -107,6 +107,7 @@ function createListItem (list, popup) {
       audio.pause();
       playButton.textContent = '▶️';
     }
+    console.log(document.getElementById('user-avatar'));
   });
 
   audio.addEventListener('timeupdate', function () {
@@ -184,3 +185,40 @@ for (const marker of db) {
     sidebar.classList.add('show');
   });
 }
+window.onload = function() {
+  document.getElementById('login-btn').addEventListener('click', function() {
+    // Trigger login action
+    window.location.href = '/auth/google'; // This will redirect to the Google login
+  });
+};
+// Modal interaction
+window.addEventListener('DOMContentLoaded', (event) => {
+  const uploadModal = document.getElementById('uploadModal');
+  const closeModal = document.getElementById('closeModal');
+  const fileInput = document.getElementById('fileInput');
+
+
+  // Open the modal
+  console.log(document.getElementById('user-avatar'));
+  document.getElementById('user-avatar').addEventListener('click', function() {
+    console.log('Avatar clicked');
+    uploadModal.style.display = "block";
+  });
+
+  // Close the modal
+  closeModal.addEventListener('click', function() {
+      uploadModal.style.display = "none";
+  });
+
+  // File upload
+  
+  fileInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      console.log('File selected:', file);
+
+      //send data to db
+
+      uploadModal.style.display = "none";
+  });
+});
+c
