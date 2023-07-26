@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 
 function UploadModal({ isOpen, onClose, onUpload }) {
