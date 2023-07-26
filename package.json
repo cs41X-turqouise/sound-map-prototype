@@ -1,9 +1,19 @@
 {
   "dependencies": {
+    "@fastify/passport": "^2.3.0",
+    "@fastify/secure-session": "^4.1.1",
     "@types/leaflet": "^1.9.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "fastify": "^3.29.5",
     "fastify-cookie": "^5.7.0",
+    "fastify-passport": "^0.6.0",
     "fastify-session": "^5.2.1",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
   }
 }
