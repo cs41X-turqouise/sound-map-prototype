@@ -221,4 +221,3 @@ window.addEventListener('DOMContentLoaded', (event) => {
       uploadModal.style.display = "none";
   });
 });
-c
