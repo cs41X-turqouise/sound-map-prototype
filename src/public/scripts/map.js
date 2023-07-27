@@ -1,5 +1,5 @@
-/** @typedef {import('./db/db.js').DbItem} PopUp */
-import { db } from './db/db.js';
+/** @typedef {import('../../db/db.js').DbItem} PopUp */
+import { db } from '../../db/db.js';
 
 /** @type {L.Map} */
 const map = new L.Map('map', {
@@ -41,15 +41,16 @@ const views = {
 
 // set inital view
 views.osm.addTo(map);
-L.control.layers(views).addTo(map);
 L.control.scale().addTo(map);
+L.control.layers(views, null, { position: 'bottomleft' }).addTo(map);
+map.zoomControl.setPosition('bottomright');
 L.control.locate({ position: 'bottomright' }).addTo(map);
 /** @type {L.Marker} */
 let marker = null;
 const addressSearchControl = L.control.addressSearch(
     '831a036f042649b889c729791827ea17',
     {
-      position: 'topright',
+      position: 'topleft',
       // set it true to search addresses nearby first
       mapViewBias: true,
       placeholder: 'Enter an address here',
@@ -189,39 +190,75 @@ for (const marker of db) {
     sidebar.classList.add('show');
   });
 }
-window.onload = function () {
-  document.getElementById('login-btn').addEventListener('click', function () {
-    // Trigger login action
-    window.location.href = '/auth/google'; // This will redirect to the Google login
+
+const userAvatar = document.getElementById('user-avatar');
+userAvatar.addEventListener('click', function (e) {
+  console.log('user avatar clicked');
+  const userMenu = document.getElementById('user-menu-dropdown');
+  userMenu.innerHTML = '';
+  if (userMenu.classList.contains('show')) {
+    userMenu.classList.remove('show');
+    return;
+  }
+  const userGreeting = document.createElement('span');
+  userGreeting.textContent = 'Hello <USER>';
+  const userLogin = document.createElement('button');
+  userLogin.textContent = 'Login with Google';
+  userLogin.addEventListener('click', function (e) {
+    window.location.href = '/auth/google';
   });
-};
-// Modal interaction
-window.addEventListener('DOMContentLoaded', (event) => {
-  const uploadModal = document.getElementById('uploadModal');
-  const closeModal = document.getElementById('closeModal');
-  const fileInput = document.getElementById('fileInput');
-
-
-  // Open the modal
-  console.log(document.getElementById('user-avatar'));
-  document.getElementById('user-avatar').addEventListener('click', function () {
-    console.log('Avatar clicked');
-    uploadModal.style.display = 'block';
+  const uploadButton = document.createElement('button');
+  uploadButton.textContent = 'Upload';
+  uploadButton.addEventListener('click', function (e) {
+    const uploadForm = document.getElementById('upload-form');
+    uploadForm.innerHTML = ''; // hacky but works
+    /**
+     * <h2>Upload a new sound</h2>
+     * <form method="post" action="/upload" enctype="multipart/form-data">
+     *  <div class="form-group">
+     *   <label for="file">Choose File</label>
+     *  <input type="file" name="file" id="file" accept="audio/*" class="form-control-file">
+     * </div>
+     * <button type="submit" class="btn btn-primary">Submit</button>
+     */
+    const formHeader = document.createElement('h2');
+    formHeader.textContent = 'Upload a new sound';
+    uploadForm.appendChild(formHeader);
+    const form = document.createElement('form');
+    form.setAttribute('method', 'post');
+    // form.setAttribute('action', '/upload');
+    // form.setAttribute('enctype', 'multipart/form-data');
+    const formGroup = document.createElement('div');
+    formGroup.classList.add('form-group');
+    const formLabel = document.createElement('label');
+    formLabel.setAttribute('for', 'file');
+    // formLabel.textContent = 'Choose File';
+    const formInput = document.createElement('input');
+    formInput.setAttribute('type', 'file');
+    formInput.setAttribute('name', 'file');
+    formInput.setAttribute('id', 'file');
+    formInput.setAttribute('accept', 'audio/*');
+    formInput.setAttribute('required', true);
+    formInput.classList.add('form-control-file');
+    formGroup.appendChild(formLabel);
+    formGroup.appendChild(formInput);
+    form.appendChild(formGroup);
+    const formSubmit = document.createElement('button');
+    formSubmit.setAttribute('type', 'submit');
+    formSubmit.classList.add('btn', 'btn-primary');
+    formSubmit.textContent = 'Upload';
+    form.appendChild(formSubmit);
+    uploadForm.appendChild(form);
+    uploadForm.classList.add('show');
   });
-
-  // Close the modal
-  closeModal.addEventListener('click', function () {
-    uploadModal.style.display = 'none';
-  });
-
-  // File upload
-
-  fileInput.addEventListener('change', function (event) {
-    const file = event.target.files[0];
-    console.log('File selected:', file);
-
-    // send data to db
-
-    uploadModal.style.display = 'none';
-  });
+  userMenu.appendChild(
+      document.createElement('li').appendChild(userGreeting)
+  );
+  userMenu.appendChild(
+      document.createElement('li').appendChild(userLogin)
+  );
+  userMenu.appendChild(
+      document.createElement('li').appendChild(uploadButton)
+  );
+  userMenu.classList.add('show');
 });

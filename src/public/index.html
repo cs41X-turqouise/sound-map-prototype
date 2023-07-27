@@ -11,23 +11,18 @@
   </head>
   <body>    
     <header>
-      <h1 id="page-title">Sound Map</h1>
-      <div id="user-area">
-        <img id="user-avatar" src="./assets/default-avatar.png" alt="User Avatar">
-        <button id="login-btn">Login</button>
-      </div>
+      <h1 id="page-title">Sound Map for a Changing Landscape</h1>
+      <img id="user-avatar" src="./assets/default-avatar.png" alt="User Avatar">
     </header>    
-    <!-- Modal -->
-    <div id="uploadModal" class="modal">
-      <!-- Modal content -->
-      <div class="modal-content">
-        <h2>Upload MP3</h2>
-        <input id="fileInput" type="file" accept="audio/mp3">
-        <button id="closeModal">Close</button>
-      </div>
-    </div>
-
     <main>
+      <!-- Modal -->
+      <div id="upload-form" class="modal" style="width: fit-content;">
+      </div>
+      <div id="user-menu" class="user-menu">
+        <ul id="user-menu-dropdown" class="popup-list">
+          <!-- <li><a href="#">Upload MP3</a></li> -->
+        </ul>
+      </div>
       <div id="sidebar" class="sidebar">
         <ul id="popup-list" class="popup-list">
           <li>
@@ -49,6 +44,6 @@
     <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
     <script src="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.js"></script>
-    <script src = "./map.js" type="module"></script>
+    <script src = "./scripts/map.js" type="module"></script>
   </body>
 </html>
