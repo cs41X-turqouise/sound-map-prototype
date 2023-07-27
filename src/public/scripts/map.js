@@ -210,46 +210,29 @@ userAvatar.addEventListener('click', function (e) {
   const uploadButton = document.createElement('button');
   uploadButton.textContent = 'Upload';
   uploadButton.addEventListener('click', function (e) {
-    const uploadForm = document.getElementById('upload-form');
-    uploadForm.innerHTML = ''; // hacky but works
-    /**
-     * <h2>Upload a new sound</h2>
-     * <form method="post" action="/upload" enctype="multipart/form-data">
-     *  <div class="form-group">
-     *   <label for="file">Choose File</label>
-     *  <input type="file" name="file" id="file" accept="audio/*" class="form-control-file">
-     * </div>
-     * <button type="submit" class="btn btn-primary">Submit</button>
-     */
-    const formHeader = document.createElement('h2');
-    formHeader.textContent = 'Upload a new sound';
-    uploadForm.appendChild(formHeader);
-    const form = document.createElement('form');
-    form.setAttribute('method', 'post');
-    // form.setAttribute('action', '/upload');
-    // form.setAttribute('enctype', 'multipart/form-data');
-    const formGroup = document.createElement('div');
-    formGroup.classList.add('form-group');
-    const formLabel = document.createElement('label');
-    formLabel.setAttribute('for', 'file');
-    // formLabel.textContent = 'Choose File';
-    const formInput = document.createElement('input');
-    formInput.setAttribute('type', 'file');
-    formInput.setAttribute('name', 'file');
-    formInput.setAttribute('id', 'file');
-    formInput.setAttribute('accept', 'audio/*');
-    formInput.setAttribute('required', true);
-    formInput.classList.add('form-control-file');
-    formGroup.appendChild(formLabel);
-    formGroup.appendChild(formInput);
-    form.appendChild(formGroup);
-    const formSubmit = document.createElement('button');
-    formSubmit.setAttribute('type', 'submit');
-    formSubmit.classList.add('btn', 'btn-primary');
-    formSubmit.textContent = 'Upload';
-    form.appendChild(formSubmit);
-    uploadForm.appendChild(form);
-    uploadForm.classList.add('show');
+    const uploadModal = document.getElementById('upload-modal');
+    const form = document.getElementById('upload-form');
+    const closeButton = document.querySelector('.close');
+    closeButton.addEventListener('click', function () {
+      form.reset();
+      // uploadModal.classList.remove('show');
+      uploadModal.style.display = 'none';
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      form.reset();
+      uploadModal.classList.remove('show');
+      uploadModal.style.display = 'none';
+      const formData = new FormData(form);
+      console.log(
+          `Form submitted: `
+          + `title=${formData.get('title')}, `
+          + `description=${formData.get('description')}, `
+          + `file=${formData.get('file').name}, `
+      );
+    });
+    // uploadModal.classList.add('show');
+    uploadModal.style.display = 'block';
   });
   userMenu.appendChild(
       document.createElement('li').appendChild(userGreeting)
