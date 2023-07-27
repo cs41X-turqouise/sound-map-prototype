@@ -15,9 +15,12 @@
   },
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon src\\server.js"
+    "dev": "cross-env node devScript.js",
+    "dev:win": "nodemon src\\server.js",
+    "dev:linux": "nodemon src/server.js"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-react": "^7.33.0",
