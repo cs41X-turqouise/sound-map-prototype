@@ -245,3 +245,6 @@ userAvatar.addEventListener('click', function (e) {
   );
   userMenu.classList.add('show');
 });
+document.getElementById('sidebar-close').addEventListener('click', function() {
+  document.getElementById('sidebar').classList.remove('show');
+});

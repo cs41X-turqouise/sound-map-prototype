@@ -137,7 +137,22 @@ main {
 .sidebar.show {
   left: 0;
 }
-
+.sidebar-close {
+  position: absolute;
+  top: -5px;
+  right: 15px;
+  border: none;
+  background: rgb(205, 202, 202);
+  font-size: 12pt;
+  cursor: pointer;
+  Color: 	black;
+  
+}
+.sidebar-close:hover {
+  background: #fd03039d; 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25); 
+  /* color: #f00; Change color X r */
+}
 .popup-list {
   list-style: none;
   margin: 0;
