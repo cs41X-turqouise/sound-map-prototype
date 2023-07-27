@@ -24,6 +24,7 @@
       "object-curly-spacing": ["error", "always"],
       "space-before-function-paren": ["error", "always"],
       "max-len": ["error", { "code": 120, "ignoreComments": true, "ignoreStrings": true, "ignoreTemplateLiterals": true }],
-      "operator-linebreak": ["error", "before"]
+      "operator-linebreak": ["error", "before"],
+      "valid-jsdoc": 0
     }
 }
