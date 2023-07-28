@@ -18,16 +18,96 @@ function randLatLng () {
   return [lat, lng];
 }
 
-/**
- * @typedef {Object} DbItem
- * @property {string} user
- * @property {Date} date
- * @property {string} title
- * @property {string} [description]
- * @property {string} file
- * @property {number[]} latlng
- */
-export const db = [
+const sounds = [
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+  '../assets/waves-crashing.wav',
+  '../assets/waitomo-nz-ambiance.wav',
+  '../assets/deep-waves-with-reverb.wav',
+];
+
+const names = [
+  'Amber Joseph',
+  'Demetrius Bush',
+  'Dylan Mccarthy',
+  'Eliana Mccormick',
+  'Emanuel Mccormick',
+  'Jimmy Hancock',
+  'Marylou Webb',
+  'Kristi Everett',
+  'Theron Archer',
+  'Jacinto Riggs',
+  'Kim Norton',
+  'Angelique Jones',
+  'Evelyn Solomon',
+  'Logan Russo',
+];
+
+const randName = () => {
+  return names[randNum(0, names.length)];
+};
+
+const randSound = () => {
+  return sounds[randNum(0, sounds.length)];
+};
+
+/** @class */
+// class SoundArtifact {
+//   /**
+//    * @constructor
+//    * @param {string} [artist]
+//    * @param {string} [title]
+//    * @param {string} [description]
+//    * @param {string} [file]
+//    * @param {[number, number]} [latlng]
+//    */
+//   constructor (artist, title, description, file, latlng) {
+//     this.file = file || randSound();
+//     this.artist = artist || randName();
+//     this.title = title || this.file.split('/').pop();
+//     this.description = description || '';
+//     this.fileType = this.file.split('.').pop();
+//     this.latlng = latlng || randLatLng();
+//   }
+// };
+
+/** @class */
+class DbItem {
+  /**
+   * @constructor
+   * @param {string} [user]
+   * @param {Date} [date]
+   * @param {string} [artist]
+   * @param {string} [title]
+   * @param {string} [description]
+   * @param {string[]} [tags]
+   * @param {string} [file]
+   * @param {[number, number]} [latlng]
+   */
+  constructor (user, date, artist, title, description, tags, file, latlng) {
+    this.user = user || `user${randNum()}`;
+    this.date = date || randDate();
+    this.file = file || randSound();
+    this.artist = artist || randName();
+    this.title = title || this.file.split('/').pop();
+    this.description = description || '';
+    this.tags = tags || [];
+    this.fileType = this.file.split('.').pop();
+    this.latlng = latlng || randLatLng();
+    // this.artifact = new SoundArtifact(
+    //     artist,
+    //     title,
+    //     description,
+    //     file,
+    //     latlng
+    // );
+  }
+};
+
+/** @type {Array<DbItem>} */
+export const db = [];
+
+// insert some test data
+[
   {
     user: 'user1',
     date: randDate(),
@@ -63,14 +143,28 @@ export const db = [
     file: '../assets/waves-crashing.wav',
     latlng: [37.01996, -76.32751],
   },
-];
+].forEach((item) => {
+  db.push(new DbItem(
+      item.user,
+      item.date,
+      randName(),
+      item.title,
+      '...description of the sound',
+      ['tag1', 'tag2'],
+      item.file,
+      item.latlng
+  ));
+});
 
 for (let i = 0; i < 100; i++) {
-  db.push({
-    user: `user${randNum()}`,
-    date: randDate(),
-    title: `Test${randNum()}`,
-    file: '../assets/waves-crashing.wav',
-    latlng: randLatLng(),
-  });
+  db.push(new DbItem(
+      `user${randNum()}`,
+      randDate(),
+      randName(),
+      `Test${randNum()}`,
+      '...description of the sound',
+      ['tag1', 'tag2'],
+      randSound(),
+      randLatLng()
+  ));
 }
