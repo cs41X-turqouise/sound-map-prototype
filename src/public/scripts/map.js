@@ -108,7 +108,10 @@ function createListItem (list, popup) {
   const audio = new Audio(popup.file);
 
   listItem.addEventListener('click', function (e) {
-    map.setView(popup.latlng, 20);
+    map.setView(popup.latlng, 10);
+    const activeListItem = list.querySelector('.active');
+    if (activeListItem) activeListItem.classList.remove('active');
+    listItem.classList.add('active');
   });
 
   playButton.addEventListener('click', function (e) {

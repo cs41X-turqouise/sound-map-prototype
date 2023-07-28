@@ -196,6 +196,11 @@ main {
   border-bottom: 1px solid #ccc;
 }
 
+.popup-list li.active {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
 .popup-list li:hover {
   background-color: #f5f5f5;
 }
