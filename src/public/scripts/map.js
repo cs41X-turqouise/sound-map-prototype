@@ -119,21 +119,25 @@ function createListItem (list, popup) {
       audio.pause();
       playButton.textContent = '▶️';
     }
-    console.log(document.getElementById('user-avatar'));
   });
 
   audio.addEventListener('timeupdate', function () {
     const progress = (audio.currentTime / audio.duration) * 100;
     progressBar.style.width = `${progress}%`;
+    const duration = formatTime(audio.duration);
+    const currentTime = formatTime(audio.currentTime);
+    durationLabel.textContent = `${currentTime} / ${duration}`;
   });
 
   audio.addEventListener('ended', function () {
-    soundBar.style.display = 'none';
+    playButton.textContent = '▶️';
+    progressBar.style.width = '0%';
+    durationLabel.textContent = `0:00 / ${formatTime(audio.duration)}`;
   });
 
   audio.addEventListener('loadedmetadata', function () {
     const duration = formatTime(audio.duration);
-    durationLabel.textContent = duration;
+    durationLabel.textContent = `0:00 / ${duration}`;
   });
 
   /**
