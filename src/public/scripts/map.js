@@ -46,34 +46,34 @@ L.control.layers(views, null, { position: 'bottomleft' }).addTo(map);
 map.zoomControl.setPosition('bottomright');
 L.control.locate({ position: 'bottomright' }).addTo(map);
 /** @type {L.Marker} */
-let marker = null;
-const addressSearchControl = L.control.addressSearch(
-    '831a036f042649b889c729791827ea17',
-    {
-      position: 'topleft',
-      // set it true to search addresses nearby first
-      mapViewBias: true,
-      placeholder: 'Enter an address here',
+// let marker = null;
+// const addressSearchControl = L.control.addressSearch(
+//     '831a036f042649b889c729791827ea17',
+//     {
+//       position: 'topleft',
+//       // set it true to search addresses nearby first
+//       mapViewBias: true,
+//       placeholder: 'Enter an address here',
 
-      resultCallback: (address) => {
-        if (!address) return;
-        if (marker) {
-          map.removeLayer(marker);
-          marker = null;
-        }
+//       resultCallback: (address) => {
+//         if (!address) return;
+//         if (marker) {
+//           map.removeLayer(marker);
+//           marker = null;
+//         }
 
-        // add marker
-        marker = L.marker([address.lat, address.lon]).addTo(map);
-        // Sets the view of the map (geographical center and zoom) with the given animation options.
-        map.setView([address.lat, address.lon], 20);
-      },
+//         // add marker
+//         marker = L.marker([address.lat, address.lon]).addTo(map);
+//         // Sets the view of the map (geographical center and zoom) with the given animation options.
+//         map.setView([address.lat, address.lon], 20);
+//       },
 
-      suggestionsCallback: (suggestions) => {
-        console.debug(suggestions);
-      }
-    }
-);
-map.addControl(addressSearchControl);
+//       suggestionsCallback: (suggestions) => {
+//         console.debug(suggestions);
+//       }
+//     }
+// );
+// map.addControl(addressSearchControl);
 
 /**
  * @param {HTMLElement} list
@@ -99,6 +99,10 @@ function createListItem (list, popup) {
   const progressBar = soundBar.querySelector('.progress-bar');
   const durationLabel = soundBar.querySelector('.duration-label');
   const audio = new Audio(popup.file);
+
+  listItem.addEventListener('click', function (e) {
+    map.setView(popup.latlng, 20);
+  });
 
   playButton.addEventListener('click', function (e) {
     if (audio.paused) {
@@ -136,6 +140,138 @@ function createListItem (list, popup) {
   }
 };
 
+const showSidebar = function () {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.add('show');
+};
+
+const hideSidebar = function () {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.remove('show');
+};
+
+const dropdown = document.getElementById('dropbtn-search');
+const form = document.getElementById('search-form');
+const searchModal = document.getElementById('search-modal');
+const closeButton = document.querySelector('#search-modal .close');
+const closeForm = function () {
+  form.reset();
+  searchModal.style.display = 'none';
+};
+closeButton.addEventListener('click', function (e) {
+  closeForm();
+});
+form.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const formData = new FormData(form);
+  /**
+   * @type {{
+   * title: string,
+   * artist: string,
+   * description: string
+   * fileType: string,
+   * dateFrom: Date,
+   * dateTo: Date,
+   * }}
+   */
+  const data = {};
+  for (const [key, value] of formData.entries()) {
+    data[key] = value;
+  }
+  const filteredData = db.filter(function (item) {
+    if (data.title && !item.title.includes(data.title)) {
+      return false;
+    }
+    if (data.artist && !item.artist.includes(data.artist)) {
+      return false;
+    }
+    if (data.description && !item.description.includes(data.description)) {
+      return false;
+    }
+    if (data.fileType && !item.fileType.includes(data.fileType)) {
+      return false;
+    }
+    if (data.dateFrom && item.date < new Date(data.dateFrom)) {
+      return false;
+    }
+    if (data.dateTo && item.date > new Date(data.dateTo)) {
+      return false;
+    }
+    return true;
+  });
+  closeForm();
+  if (!filteredData.length) {
+    console.log('No results found.');
+    return;
+  }
+  // const firstResult = filteredData.at(0);
+  // map.setView(firstResult.latlng, 20);
+  const popupList = document.getElementById('popup-list');
+  popupList.innerHTML = '';
+  filteredData.forEach(function (item) {
+    // want to create a way to sort results by how much they match the search
+    // item.distance = L.latLng(item.latlng).distanceTo(firstResult.latlng);
+    createListItem(popupList, item);
+  });
+  showSidebar();
+});
+dropdown.addEventListener('click', function (e) {
+  searchModal.style.display = 'block';
+});
+
+const userAvatar = document.getElementById('user-avatar');
+userAvatar.addEventListener('click', function (e) {
+  console.log('user avatar clicked');
+  const userMenu = document.getElementById('user-menu-dropdown');
+  userMenu.innerHTML = '';
+  if (userMenu.classList.contains('show')) {
+    userMenu.classList.remove('show');
+    return;
+  }
+  const userGreeting = document.createElement('span');
+  userGreeting.textContent = 'Hello <USER>';
+  const userLogin = document.createElement('button');
+  userLogin.textContent = 'Login with Google';
+  userLogin.addEventListener('click', function (e) {
+    window.location.href = '/auth/google';
+  });
+  const uploadButton = document.createElement('button');
+  uploadButton.textContent = 'Upload';
+  uploadButton.addEventListener('click', function (e) {
+    const uploadModal = document.getElementById('upload-modal');
+    const form = document.getElementById('upload-form');
+    const closeButton = document.querySelector('#upload-modal .close');
+    closeButton.addEventListener('click', function () {
+      form.reset();
+      uploadModal.style.display = 'none';
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      form.reset();
+      uploadModal.classList.remove('show');
+      uploadModal.style.display = 'none';
+      const formData = new FormData(form);
+      console.log(
+          `Form submitted: `
+          + `title=${formData.get('title')}, `
+          + `description=${formData.get('description')}, `
+          + `file=${formData.get('file').name}, `
+      );
+    });
+    uploadModal.style.display = 'block';
+  });
+  userMenu.appendChild(
+      document.createElement('li').appendChild(userGreeting)
+  );
+  userMenu.appendChild(
+      document.createElement('li').appendChild(userLogin)
+  );
+  userMenu.appendChild(
+      document.createElement('li').appendChild(uploadButton)
+  );
+  userMenu.classList.add('show');
+});
+
 map.on('click', (e) => {
   L.popup()
       .setLatLng(e.latlng)
@@ -160,18 +296,19 @@ map.on('click', (e) => {
     createListItem(popupList, popup);
   });
 
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.add('show');
+  showSidebar();
 });
 
 map.on('popupopen', function () {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.add('show');
+  showSidebar();
 });
 
 map.on('popupclose', function () {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.remove('show');
+  hideSidebar();
+});
+
+document.getElementById('sidebar-close').addEventListener('click', function () {
+  hideSidebar();
 });
 
 for (const marker of db) {
@@ -179,7 +316,7 @@ for (const marker of db) {
       .addTo(map)
       .bindPopup(
           `<b>${marker.title}</b><br>`
-      + `Date: ${marker.date.toLocaleDateString()}`
+          + `Date: ${marker.date.toLocaleDateString()}`
       );
   popup.on('click', function (e) {
     console.log('popup clicked');
@@ -190,61 +327,3 @@ for (const marker of db) {
     sidebar.classList.add('show');
   });
 }
-
-const userAvatar = document.getElementById('user-avatar');
-userAvatar.addEventListener('click', function (e) {
-  console.log('user avatar clicked');
-  const userMenu = document.getElementById('user-menu-dropdown');
-  userMenu.innerHTML = '';
-  if (userMenu.classList.contains('show')) {
-    userMenu.classList.remove('show');
-    return;
-  }
-  const userGreeting = document.createElement('span');
-  userGreeting.textContent = 'Hello <USER>';
-  const userLogin = document.createElement('button');
-  userLogin.textContent = 'Login with Google';
-  userLogin.addEventListener('click', function (e) {
-    window.location.href = '/auth/google';
-  });
-  const uploadButton = document.createElement('button');
-  uploadButton.textContent = 'Upload';
-  uploadButton.addEventListener('click', function (e) {
-    const uploadModal = document.getElementById('upload-modal');
-    const form = document.getElementById('upload-form');
-    const closeButton = document.querySelector('.close');
-    closeButton.addEventListener('click', function () {
-      form.reset();
-      // uploadModal.classList.remove('show');
-      uploadModal.style.display = 'none';
-    });
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      form.reset();
-      uploadModal.classList.remove('show');
-      uploadModal.style.display = 'none';
-      const formData = new FormData(form);
-      console.log(
-          `Form submitted: `
-          + `title=${formData.get('title')}, `
-          + `description=${formData.get('description')}, `
-          + `file=${formData.get('file').name}, `
-      );
-    });
-    // uploadModal.classList.add('show');
-    uploadModal.style.display = 'block';
-  });
-  userMenu.appendChild(
-      document.createElement('li').appendChild(userGreeting)
-  );
-  userMenu.appendChild(
-      document.createElement('li').appendChild(userLogin)
-  );
-  userMenu.appendChild(
-      document.createElement('li').appendChild(uploadButton)
-  );
-  userMenu.classList.add('show');
-});
-document.getElementById('sidebar-close').addEventListener('click', function () {
-  document.getElementById('sidebar').classList.remove('show');
-});
