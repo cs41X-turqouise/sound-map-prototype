@@ -86,6 +86,13 @@ function createListItem (list, popup) {
   listItem.innerHTML = (
     `<b class="name">${popup.title}</b> (<span class="distance">${distance}</span> m)<br>`
     + `Date: <span class="date">${popup.date?.toLocaleDateString()}</span><br>`
+    + `Artist: <span class="artist">${popup.artist}</span><br>`
+    + `Description:`
+    + `<div class="description-container">`
+    + `<p class="description">${popup.description}</p>`
+    + `</div>`
+    // todo - tags
+    + `Tags: <span class="tags">${popup.tags}</span><br>`
     + `<div class="sound-bar" data-file="${popup.file}">`
     + `<button class="play-button">▶️</button>`
     + `<div class="progress-bar"></div>`
@@ -168,7 +175,8 @@ form.addEventListener('submit', function (e) {
    * @type {{
    * title: string,
    * artist: string,
-   * description: string
+   * description: string,
+   * tags: string[],
    * fileType: string,
    * dateFrom: Date,
    * dateTo: Date,
@@ -187,6 +195,11 @@ form.addEventListener('submit', function (e) {
     }
     if (data.description && !item.description.includes(data.description)) {
       return false;
+    }
+    if (Array.isArray(data.tags)) {
+      if (!data.tags.some((tag) => item.tags.includes(tag.toLowerCase()))) {
+        return false;
+      }
     }
     if (data.fileType && !item.fileType.includes(data.fileType)) {
       return false;
