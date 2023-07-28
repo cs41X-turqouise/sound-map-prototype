@@ -90,7 +90,7 @@ class DbItem {
     this.artist = artist || randName();
     this.title = title || this.file.split('/').pop();
     this.description = description || '';
-    this.tags = tags || [];
+    this.tags = (tags || []).map((tag) => tag.toLowerCase());
     this.fileType = this.file.split('.').pop();
     this.latlng = latlng || randLatLng();
     // this.artifact = new SoundArtifact(
