@@ -181,40 +181,52 @@ form.addEventListener('submit', function (e) {
   /**
    * @type {{
    * title: string,
-   * artist: string,
+   * artist: string[],
    * description: string,
    * tags: string[],
-   * fileType: string,
+   * fileType: string[],
    * dateFrom: Date,
    * dateTo: Date,
    * }}
    */
   const data = {};
   for (const [key, value] of formData.entries()) {
-    data[key] = value;
+    if (['artist', 'tags', 'fileType'].includes(key)) {
+      data[key] = value.includes(',')
+        ? value.split(',').map((item) => item.trim().toLowerCase())
+        : value ? [value] : []; // feels hacky
+      if (key === 'fileType') {
+        data[key] = data[key].map((item) => item.replace('.', ''));
+      }
+    } else if (value && (key === 'dateFrom' || key === 'dateTo')) {
+      data[key] = new Date(value);
+    } else {
+      data[key] = value;
+    }
   }
   const filteredData = db.filter(function (item) {
     if (data.title && !item.title.includes(data.title)) {
       return false;
     }
-    if (data.artist && !item.artist.includes(data.artist)) {
+    if (data.artist.length
+      && !data.artist.some((artist) => item.artist.toLowerCase().includes(artist))) {
       return false;
     }
     if (data.description && !item.description.includes(data.description)) {
       return false;
     }
-    if (Array.isArray(data.tags)) {
-      if (!data.tags.some((tag) => item.tags.includes(tag.toLowerCase()))) {
-        return false;
-      }
-    }
-    if (data.fileType && !item.fileType.includes(data.fileType)) {
+    if (data.tags.length
+      && !data.tags.some((tag) => item.tags.includes(tag.toLowerCase()))) {
       return false;
     }
-    if (data.dateFrom && item.date < new Date(data.dateFrom)) {
+    if (data.fileType.length
+      && !data.fileType.some((ft) => item.fileType.includes(ft.toLowerCase()))) {
       return false;
     }
-    if (data.dateTo && item.date > new Date(data.dateTo)) {
+    if (data.dateFrom && item.date < data.dateFrom) {
+      return false;
+    }
+    if (data.dateTo && item.date > data.dateTo) {
       return false;
     }
     return true;
