@@ -42,6 +42,9 @@ app.use(session({
   secret: 'thisisaverylongstringthatishopefullysecure',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 // 1 hour
+  },
 }));
 
 // Passport setup
@@ -76,6 +79,32 @@ app.get('/auth/google/callback',
 // Route that renders the login page
 app.get('/login', function (req, res) {
   res.send('Login Page');
+});
+
+app.get('/test', function (req, res) {
+  if (!req.isAuthenticated()) {
+    res.redirect('/');
+  } else {
+    res.send(
+        `<div>`
+      + `<h1>Hello ${req.user.email}</h1>`
+      + `<a href="/logout">Logout</a>`
+      + `<span> | </span>`
+      + `<a href="/">Home</a>`
+      + `</div>`
+    );
+  }
+});
+
+app.get('/logout', function (req, res) {
+  req.logout(function (err) {
+    if (err) {
+      console.log(err);
+      return next(err);
+    }
+    res.redirect('/');
+  });
+  console.log('user logged out');
 });
 
 // Start the server on port
