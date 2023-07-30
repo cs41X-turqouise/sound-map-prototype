@@ -1,5 +1,5 @@
 /** @typedef {import('../../db/db.js').DbItem} PopUp */
-import { db } from '../../db/db.js';
+import { db, DbItem } from '../../db/db.js';
 
 /** @type {L.Map} */
 const map = new L.Map('map', {
@@ -279,16 +279,31 @@ userAvatar.addEventListener('click', function (e) {
     });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      form.reset();
-      uploadModal.classList.remove('show');
-      uploadModal.style.display = 'none';
       const formData = new FormData(form);
+      const data = {};
+      for (const [key, value] of formData.entries()) {
+        if (key === 'tags') {
+          data[key] = value.includes(',')
+            ? value.split(',').map((item) => item.trim().toLowerCase())
+            : value.includes(' ')
+              ? value.split(' ').map((item) => item.trim().toLowerCase())
+              : value ? [value] : []; // feels hacky
+        } else {
+          data[key] = value;
+        }
+      }
+      console.log(data);
+      db.push(new DbItem(data));
+      console.log(db.at(-1));
       console.log(
           `Form submitted: `
           + `title=${formData.get('title')}, `
           + `description=${formData.get('description')}, `
           + `file=${formData.get('file').name}, `
       );
+      form.reset();
+      uploadModal.classList.remove('show');
+      uploadModal.style.display = 'none';
     });
     uploadModal.style.display = 'block';
   });
