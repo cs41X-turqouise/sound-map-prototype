@@ -45,35 +45,6 @@ L.control.scale().addTo(map);
 L.control.layers(views, null, { position: 'bottomleft' }).addTo(map);
 map.zoomControl.setPosition('bottomright');
 L.control.locate({ position: 'bottomright' }).addTo(map);
-/** @type {L.Marker} */
-// let marker = null;
-// const addressSearchControl = L.control.addressSearch(
-//     '831a036f042649b889c729791827ea17',
-//     {
-//       position: 'topleft',
-//       // set it true to search addresses nearby first
-//       mapViewBias: true,
-//       placeholder: 'Enter an address here',
-
-//       resultCallback: (address) => {
-//         if (!address) return;
-//         if (marker) {
-//           map.removeLayer(marker);
-//           marker = null;
-//         }
-
-//         // add marker
-//         marker = L.marker([address.lat, address.lon]).addTo(map);
-//         // Sets the view of the map (geographical center and zoom) with the given animation options.
-//         map.setView([address.lat, address.lon], 20);
-//       },
-
-//       suggestionsCallback: (suggestions) => {
-//         console.debug(suggestions);
-//       }
-//     }
-// );
-// map.addControl(addressSearchControl);
 
 /**
  * @param {HTMLElement} list
