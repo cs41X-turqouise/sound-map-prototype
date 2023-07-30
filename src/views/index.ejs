@@ -21,10 +21,10 @@
           <span>Hello <%= user || 'Guest' %></span>
           <% if (user) { %>
             <button type="button" id="logout">Logout</button>
+            <button type="button" id="upload">Upload</button>
           <% } else { %>
             <button type="button" id="login">Login with Google</button>
           <% } %>
-          <button type="button" id="upload">Upload</button>
         </ul>
       </div>
       <div id="search-modal" class="modal" style="width: fit-content;">
