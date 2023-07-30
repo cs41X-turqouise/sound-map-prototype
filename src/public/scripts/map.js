@@ -46,6 +46,9 @@ L.control.layers(views, null, { position: 'bottomleft' }).addTo(map);
 map.zoomControl.setPosition('bottomright');
 L.control.locate({ position: 'bottomright' }).addTo(map);
 
+/** @type {HTMLAudioElement} */
+let currentAudio = null;
+
 /**
  * @param {HTMLElement} list
  * @param {PopUp} popup
@@ -76,7 +79,7 @@ function createListItem (list, popup) {
   const soundBar = listItem.querySelector('.sound-bar');
   const progressBar = soundBar.querySelector('.progress-bar');
   const durationLabel = soundBar.querySelector('.duration-label');
-  const audio = new Audio(popup.file);
+  const audio = new Audio(popup.file instanceof File ? URL.createObjectURL(popup.file) : popup.file);
 
   listItem.addEventListener('click', function (e) {
     map.setView(popup.latlng, 10);
@@ -87,6 +90,10 @@ function createListItem (list, popup) {
 
   playButton.addEventListener('click', function (e) {
     if (audio.paused) {
+      if (currentAudio) {
+        currentAudio.pause();
+      }
+      currentAudio = audio;
       audio.play();
       playButton.textContent = '⏸️';
     } else {
@@ -133,6 +140,10 @@ const showSidebar = function () {
 const hideSidebar = function () {
   const sidebar = document.getElementById('sidebar');
   sidebar.classList.remove('show');
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
 };
 
 const dropdown = document.getElementById('dropbtn-search');
@@ -262,15 +273,7 @@ document.getElementById('upload').addEventListener('click', function (e) {
         data[key] = value;
       }
     }
-    console.log(data);
     db.push(new DbItem(data));
-    console.log(db.at(-1));
-    console.log(
-        `Form submitted: `
-        + `title=${formData.get('title')}, `
-        + `description=${formData.get('description')}, `
-        + `file=${formData.get('file').name}, `
-    );
     form.reset();
     uploadModal.classList.remove('show');
     uploadModal.style.display = 'none';
