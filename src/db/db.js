@@ -70,29 +70,47 @@ const randSound = () => {
 //   }
 // };
 
+/**
+ * @typedef {Object} DbItemOptions
+ * @property {string} [user]
+ * @property {Date} [date]
+ * @property {string} [artist]
+ * @property {string} [title]
+ * @property {string} [description]
+ * @property {string[]} [tags]
+ * @property {string} [file]
+ * @property {[number, number]} [latlng]
+ */
+
 /** @class */
-class DbItem {
+export class DbItem {
   /**
    * @constructor
-   * @param {string} [user]
-   * @param {Date} [date]
-   * @param {string} [artist]
-   * @param {string} [title]
-   * @param {string} [description]
-   * @param {string[]} [tags]
-   * @param {string} [file]
-   * @param {[number, number]} [latlng]
+   * @param {DbItemOptions} [options]
    */
-  constructor (user, date, artist, title, description, tags, file, latlng) {
-    this.user = user || `user${randNum()}`;
-    this.date = date || randDate();
-    this.file = file || randSound();
-    this.artist = artist || randName();
-    this.title = title || this.file.split('/').pop();
-    this.description = description || '';
-    this.tags = (tags || []).map((tag) => tag.toLowerCase());
-    this.fileType = this.file.split('.').pop();
-    this.latlng = latlng || randLatLng();
+  constructor (options = {}) {
+    const {
+      user = `user${randNum()}`,
+      date = randDate(),
+      file = randSound(),
+      artist = randName(),
+      title = file instanceof File ? file.name : file.split('/').pop(),
+      description = '...description of the sound',
+      tags = ['tag1', 'tag2'],
+      latlng = randLatLng()
+    } = options;
+
+    this.user = user;
+    this.date = date;
+    this.file = file;
+    this.artist = artist;
+    this.title = title;
+    this.description = description;
+    this.tags = tags.map((tag) => tag.toLowerCase());
+    this.fileType = file instanceof File
+      ? file.name.split('.').pop()
+      : file.split('.').pop();
+    this.latlng = latlng;
     // this.artifact = new SoundArtifact(
     //     artist,
     //     title,
@@ -144,27 +162,9 @@ export const db = [];
     latlng: [37.01996, -76.32751],
   },
 ].forEach((item) => {
-  db.push(new DbItem(
-      item.user,
-      item.date,
-      randName(),
-      item.title,
-      '...description of the sound',
-      ['tag1', 'tag2'],
-      item.file,
-      item.latlng
-  ));
+  db.push(new DbItem(item));
 });
 
 for (let i = 0; i < 100; i++) {
-  db.push(new DbItem(
-      `user${randNum()}`,
-      randDate(),
-      randName(),
-      `Test${randNum()}`,
-      '...description of the sound',
-      ['tag1', 'tag2'],
-      randSound(),
-      randLatLng()
-  ));
+  db.push(new DbItem());
 }
