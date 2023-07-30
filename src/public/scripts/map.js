@@ -250,7 +250,7 @@ document.querySelector('.user-menu #login')?.addEventListener('click', function 
 document.querySelector('.user-menu #logout')?.addEventListener('click', function (e) {
   window.location.href = '/logout';
 });
-document.getElementById('upload').addEventListener('click', function (e) {
+document.getElementById('upload')?.addEventListener('click', function (e) {
   const uploadModal = document.getElementById('upload-modal');
   const form = document.getElementById('upload-form');
   const closeButton = document.querySelector('#upload-modal .close');
