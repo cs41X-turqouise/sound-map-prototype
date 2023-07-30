@@ -46,6 +46,7 @@ main {
 }
 
 .user-menu {
+  display: none;
   position: absolute;
   top: 0;
   right: 0;
@@ -82,7 +83,7 @@ main {
 }
 
 .user-menu.show {
-  right: 150px;
+  /* right: 150px; */
 }
 
 .modal {

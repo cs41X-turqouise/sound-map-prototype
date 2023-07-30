@@ -17,6 +17,17 @@
       <button id="dropbtn-search" class="dropbtn">&#9776;</button>
     </header>    
     <main>
+      <div id="user-menu" class="user-menu">
+        <ul id="user-menu-dropdown" class="popup-list">
+          <span>Hello <%= user || 'Guest' %></span>
+          <% if (user) { %>
+            <button type="button" id="logout">Logout</button>
+          <% } else { %>
+            <button type="button" id="login">Login with Google</button>
+          <% } %>
+          <button type="button" id="upload">Upload</button>
+        </ul>
+      </div>
       <div id="search-modal" class="modal" style="width: fit-content;">
         <div class="modal-content">
           <span class="close">&times;</span>
@@ -62,11 +73,6 @@
             <input type="submit" name="submit" value="Submit">
           </form>
         </div>
-      </div>
-      <div id="user-menu" class="user-menu">
-        <ul id="user-menu-dropdown" class="popup-list">
-          <!-- <li><a href="#">Upload MP3</a></li> -->
-        </ul>
       </div>
       <div id="sidebar" class="sidebar">
         <button id="sidebar-close" class="sidebar-close">&times;</button>

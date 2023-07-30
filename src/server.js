@@ -7,6 +7,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 require('dotenv').config();
 
 const app = express();
+app.disable('x-powered-by');
 
 const {
   PORT,
@@ -51,16 +52,17 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Setup view engine
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 // Serve static files from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/scripts', express.static(path.join(__dirname, 'public', 'scripts')));
-
+app.use(express.static(__dirname + '/public'));
 // Serve the db.js file
 app.use('/db', express.static(path.join(__dirname, 'db')));
 
 // Route that renders the home page
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.render('index', { user: req?.user?.email });
 });
 
 // Route that starts the Google OAuth process
@@ -106,6 +108,39 @@ app.get('/logout', function (req, res) {
   });
   console.log('user logged out');
 });
+
+// Catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+app.use(
+    /**
+     * Handle errors
+     * @param {import('express').ErrorRequestHandler} err
+     * @param {import('express').Request} req
+     * @param {import('express').Response} res
+     * @param {import('express').NextFunction} next
+     */
+    function (err, req, res, next) {
+      // Set locals, only providing error in development
+      res.locals.message = err.message;
+      res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+      // Render the error page
+      res
+          .status(err.status || 500)
+          .send(
+              `<div>`
+            + `<h1>Error ${res.statusCode}</h1>`
+            + `<p>${err.message}</p>`
+            + `<a href="/">Home</a>`
+            + `</div>`
+          );
+    }
+);
 
 // Start the server on port
 app.listen(PORT, function () {

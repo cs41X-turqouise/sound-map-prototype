@@ -4,6 +4,7 @@
     "@fastify/secure-session": "^4.1.1",
     "@types/leaflet": "^1.9.3",
     "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "fastify": "^3.29.5",
@@ -16,8 +17,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "cross-env node devScript.js",
-    "dev:win": "nodemon src\\server.js",
-    "dev:linux": "nodemon src/server.js"
+    "dev:win": "nodemon src\\server.js -e js,ejs,html,mjs,cjs,json",
+    "dev:linux": "nodemon src/server.js -e js,ejs,html,mjs,cjs,json"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

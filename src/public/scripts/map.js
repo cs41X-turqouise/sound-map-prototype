@@ -251,57 +251,45 @@ dropdown.addEventListener('click', function (e) {
   searchModal.style.display = 'block';
 });
 
-const userAvatar = document.getElementById('user-avatar');
-userAvatar.addEventListener('click', function (e) {
+document.getElementById('user-avatar').addEventListener('click', function (e) {
   console.log('user avatar clicked');
-  const userMenu = document.getElementById('user-menu-dropdown');
-  userMenu.innerHTML = '';
+  const userMenu = document.getElementById('user-menu');
   if (userMenu.classList.contains('show')) {
     userMenu.classList.remove('show');
+    userMenu.style.display = 'none';
     return;
   }
-  const userGreeting = document.createElement('span');
-  userGreeting.textContent = 'Hello <USER>';
-  const userLogin = document.createElement('button');
-  userLogin.textContent = 'Login with Google';
-  userLogin.addEventListener('click', function (e) {
-    window.location.href = '/auth/google';
-  });
-  const uploadButton = document.createElement('button');
-  uploadButton.textContent = 'Upload';
-  uploadButton.addEventListener('click', function (e) {
-    const uploadModal = document.getElementById('upload-modal');
-    const form = document.getElementById('upload-form');
-    const closeButton = document.querySelector('#upload-modal .close');
-    closeButton.addEventListener('click', function () {
-      form.reset();
-      uploadModal.style.display = 'none';
-    });
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      form.reset();
-      uploadModal.classList.remove('show');
-      uploadModal.style.display = 'none';
-      const formData = new FormData(form);
-      console.log(
-          `Form submitted: `
-          + `title=${formData.get('title')}, `
-          + `description=${formData.get('description')}, `
-          + `file=${formData.get('file').name}, `
-      );
-    });
-    uploadModal.style.display = 'block';
-  });
-  userMenu.appendChild(
-      document.createElement('li').appendChild(userGreeting)
-  );
-  userMenu.appendChild(
-      document.createElement('li').appendChild(userLogin)
-  );
-  userMenu.appendChild(
-      document.createElement('li').appendChild(uploadButton)
-  );
+  userMenu.style.display = 'block';
   userMenu.classList.add('show');
+});
+document.querySelector('.user-menu #login')?.addEventListener('click', function (e) {
+  window.location.href = '/auth/google';
+});
+document.querySelector('.user-menu #logout')?.addEventListener('click', function (e) {
+  window.location.href = '/logout';
+});
+document.getElementById('upload').addEventListener('click', function (e) {
+  const uploadModal = document.getElementById('upload-modal');
+  const form = document.getElementById('upload-form');
+  const closeButton = document.querySelector('#upload-modal .close');
+  closeButton.addEventListener('click', function () {
+    form.reset();
+    uploadModal.style.display = 'none';
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    form.reset();
+    uploadModal.classList.remove('show');
+    uploadModal.style.display = 'none';
+    const formData = new FormData(form);
+    console.log(
+        `Form submitted: `
+        + `title=${formData.get('title')}, `
+        + `description=${formData.get('description')}, `
+        + `file=${formData.get('file').name}, `
+    );
+  });
+  uploadModal.style.display = 'block';
 });
 
 map.on('click', (e) => {
