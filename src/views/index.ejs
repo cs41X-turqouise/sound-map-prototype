@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sound Map</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+  </head>
+  <body>    
+    <header>
+      <h1 id="page-title">Sound Map for a Changing Landscape</h1>
+      <img id="user-avatar" src="./assets/default-avatar.png" alt="User Avatar">
+      <button id="dropbtn-search" class="dropbtn">&#9776;</button>
+    </header>    
+    <main>
+      <div id="user-menu" class="user-menu">
+        <ul id="user-menu-dropdown" class="popup-list">
+          <span>Hello <%= user || 'Guest' %></span>
+          <% if (user) { %>
+            <button type="button" id="logout">Logout</button>
+            <button type="button" id="upload">Upload</button>
+          <% } else { %>
+            <button type="button" id="login">Login with Google</button>
+          <% } %>
+        </ul>
+      </div>
+      <div id="search-modal" class="modal" style="width: fit-content;">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Search Media</h2>
+          <form id="search-form" action="" method="post">
+            <!-- TODO - custom error messages and validation -->
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title"><br>
+
+            <label for="artist">Artist:</label>
+            <input type="text" name="artist" id="artist"><br>
+
+            <label for="description">Description:</label>
+            <input type="text" name="description" id="description"><br>
+
+            <label for="tags">Tags:</label>
+            <input type="text" name="tags" id="tags"><br>
+
+            <label for="fileType">File Type:</label>
+            <input type="text" name="fileType" id="fileType"><br>
+
+            <label for="dateFrom">From:</label>
+            <input type="date" name="dateFrom" id="dateFrom"><br>
+
+            <label for="dateTo">To:</label>
+            <input type="date" name="dateTo" id="dateTo"><br>
+
+            <input type="submit" name="submit" value="Submit">
+          </form>
+        </div>
+      </div>
+      <div id="upload-modal" class="modal" style="width: fit-content;">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Upload Media</h2>
+          <form id="upload-form" action="" method="post">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title"><br>
+            <label for="description">Description:</label>
+            <input type="text" name="description" id="description"><br>
+            <!-- TODO - better handling of these as tags are technically an array of strings -->
+            <label for="tags">Tags:</label>
+            <input type="text" name="tags" id="tags"><br>
+            <label for="file">Select a file:</label>
+            <input type="file" name="file" id="file" required><br>
+            <input type="submit" name="submit" value="Submit">
+          </form>
+        </div>
+      </div>
+      <div id="sidebar" class="sidebar">
+        <button id="sidebar-close" class="sidebar-close">&times;</button>
+        <ul id="popup-list" class="popup-list">
+          <li>
+            <b class="name"></b> (<span class="distance"></span> m)<br>
+            Date: <span class="date"></span><br>
+            <div class="sound-bar">
+              <div class='play-button'></div>
+              <div class="progress-bar"></div>
+              <div class="duration-label"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div id = "map"></div>
+    </main>
+    <footer>
+      <p>&copy; 2023 Sound Map for a Changing Landscape</p>
+    </footer>
+    <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+    <script src = "./scripts/map.js" type="module"></script>
+  </body>
+</html>
