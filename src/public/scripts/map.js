@@ -248,7 +248,19 @@ document.querySelector('.user-menu #login')?.addEventListener('click', function 
   window.location.href = '/auth/google';
 });
 document.querySelector('.user-menu #logout')?.addEventListener('click', function (e) {
-  window.location.href = '/logout';
+  fetch('/logout', {
+    method: 'POST',
+    credentials: 'same-origin'
+  }).then((response) => {
+    if (response.ok) {
+      // redirect to home page - reloads the page
+      window.location.href = '/';
+    } else {
+      throw new Error('Logout failed');
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
 });
 document.getElementById('upload')?.addEventListener('click', function (e) {
   const uploadModal = document.getElementById('upload-modal');

@@ -98,15 +98,12 @@ app.get('/test', function (req, res) {
   }
 });
 
-app.get('/logout', function (req, res) {
+app.post('/logout', function (req, res, next) {
   req.logout(function (err) {
-    if (err) {
-      console.log(err);
-      return next(err);
-    }
+    if (err) return next(err);
     res.redirect('/');
+    console.log('user logged out');
   });
-  console.log('user logged out');
 });
 
 // Catch 404 and forward to error handler
