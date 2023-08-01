@@ -155,6 +155,7 @@ export const db = [];
     date: randDate(),
     title: 'Test3',
     file: '../assets/waves-crashing.wav',
+    image: ['../assets/sea.jpg', '../assets/default-avatar.png'],
     latlng: [36.69912, -76.22452],
   },
   {

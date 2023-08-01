@@ -66,7 +66,12 @@ function createListItem (list, popup) {
     + `<div class="description-container">`
     + `<p class="description">${popup.description}</p>`
     + `</div>`
-    + (popup.image ? `<img class="image" src=${popup.image}><br>` : '')
+    + (popup.image
+        ? Array.isArray(popup.image)
+          ? `<div class="slideshow-container"></div>`
+          : `<img class="image" src=${popup.image}><br>`
+          : ''
+    )
     + `Tags: <span class="tags">${popup.tags}</span><br>`
     + `<div class="sound-bar" data-file="${popup.file}">`
     + `<button class="play-button">▶️</button>`
@@ -76,6 +81,51 @@ function createListItem (list, popup) {
   );
   list.appendChild(listItem);
   // listItem.style.backgroundImage = `url(${popup.image})`; // TODO: fix this
+
+  if (popup.image && Array.isArray(popup.image)) {
+    const slideshowContainer = listItem.querySelector('.slideshow-container');
+    let currentSlide = 0;
+    const prev = document.createElement('a');
+    prev.innerHTML = '&#10094;';
+    prev.classList.add('prev');
+    prev.onclick = (e) => {
+      e.stopPropagation();
+      const slides = slideshowContainer.querySelectorAll('.slide');
+      currentSlide === 0
+        ? (currentSlide = slides.length - 1)
+        : currentSlide--;
+      slides.forEach((slide, index) => {
+        slide.style.display = index === currentSlide ? 'block' : 'none';
+      });
+    };
+    const next = document.createElement('a');
+    next.innerHTML = '&#10095;';
+    next.classList.add('next');
+    next.onclick = (e) => {
+      e.stopPropagation();
+      const slides = slideshowContainer.querySelectorAll('.slide');
+      currentSlide === slides.length - 1
+        ? (currentSlide = 0)
+        : currentSlide++;
+      slides.forEach((slide, index) => {
+        slide.style.display = index === currentSlide ? 'block' : 'none';
+      });
+    };
+    slideshowContainer.appendChild(prev);
+    slideshowContainer.appendChild(next);
+    popup.image.forEach((image, index) => {
+      const slide = document.createElement('div');
+      slide.classList.add('slide');
+      slide.id = `slide-${index}`;
+      slide.style.display = index === 0 ? 'block' : 'none';
+
+      const img = document.createElement('img');
+      img.classList.add('image');
+      img.src = image;
+      slide.appendChild(img);
+      slideshowContainer.appendChild(slide);
+    });
+  }
 
   const playButton = listItem.querySelector('.play-button');
   const soundBar = listItem.querySelector('.sound-bar');
