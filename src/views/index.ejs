@@ -70,8 +70,13 @@
             <!-- TODO - better handling of these as tags are technically an array of strings -->
             <label for="tags">Tags:</label>
             <input type="text" name="tags" id="tags"><br>
-            <label for="file">Select a file:</label>
-            <input type="file" name="file" id="file" required><br>
+
+            <label for="file">Select a Sound File:</label>
+            <input type="file" name="file" id="file" accept="audio/*" required><br>
+
+            <label for="file">Select Image File(s):</label>
+            <input type="file" name="images" id="images" accept="image/*" multiple><br>
+
             <input type="submit" name="submit" value="Submit">
           </form>
         </div>
