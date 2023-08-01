@@ -57,6 +57,7 @@ function createListItem (list, popup) {
   const distance = popup?.distance?.toFixed(2) || 0;
 
   const listItem = document.createElement('li');
+  // popup.image = popup.image || '../assets/sea.jpg';
   listItem.innerHTML = (
     `<b class="name">${popup.title}</b> (<span class="distance">${distance}</span> m)<br>`
     + `Date: <span class="date">${popup.date?.toLocaleDateString()}</span><br>`
@@ -65,7 +66,7 @@ function createListItem (list, popup) {
     + `<div class="description-container">`
     + `<p class="description">${popup.description}</p>`
     + `</div>`
-    // todo - tags
+    + (popup.image ? `<img class="image" src=${popup.image}><br>` : '')
     + `Tags: <span class="tags">${popup.tags}</span><br>`
     + `<div class="sound-bar" data-file="${popup.file}">`
     + `<button class="play-button">▶️</button>`
@@ -74,6 +75,7 @@ function createListItem (list, popup) {
     + `</div>`
   );
   list.appendChild(listItem);
+  // listItem.style.backgroundImage = `url(${popup.image})`; // TODO: fix this
 
   const playButton = listItem.querySelector('.play-button');
   const soundBar = listItem.querySelector('.sound-bar');
@@ -333,12 +335,9 @@ document.getElementById('sidebar-close').addEventListener('click', function () {
 });
 
 for (const marker of db) {
+  /** @type {L.Popup} */
   const popup = L.marker(marker.latlng)
-      .addTo(map)
-      .bindPopup(
-          `<b>${marker.title}</b><br>`
-          + `Date: ${marker.date.toLocaleDateString()}`
-      );
+      .addTo(map);
   popup.on('click', function (e) {
     console.log('popup clicked');
     const popupList = document.getElementById('popup-list');
