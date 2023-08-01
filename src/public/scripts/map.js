@@ -148,20 +148,23 @@ const hideSidebar = function () {
   }
 };
 
-const dropdown = document.getElementById('dropbtn-search');
-const form = document.getElementById('search-form');
-const searchModal = document.getElementById('search-modal');
-const closeButton = document.querySelector('#search-modal .close');
-const closeForm = function () {
+/**
+ * @param {HTMLFormElement} form
+ * @param {HTMLElement} modal
+ */
+const closeForm = function (form, modal) {
   form.reset();
-  searchModal.style.display = 'none';
+  modal.style.display = 'none';
 };
-closeButton.addEventListener('click', function (e) {
-  closeForm();
+const dropdown = document.getElementById('dropbtn-search');
+const searchForm = document.getElementById('search-form');
+const searchModal = document.getElementById('search-modal');
+document.querySelector('#search-modal .close').addEventListener('click', function (e) {
+  closeForm(searchForm, searchModal);
 });
-form.addEventListener('submit', function (e) {
+searchForm.addEventListener('submit', function (e) {
   e.preventDefault();
-  const formData = new FormData(form);
+  const formData = new FormData(searchForm);
   /**
    * @type {{
    * title: string,
@@ -215,7 +218,7 @@ form.addEventListener('submit', function (e) {
     }
     return true;
   });
-  closeForm();
+  closeForm(searchForm, searchModal);
   if (!filteredData.length) {
     console.log('No results found.');
     return;
@@ -264,34 +267,32 @@ document.querySelector('.user-menu #logout')?.addEventListener('click', function
     console.error(error);
   });
 });
-document.getElementById('upload')?.addEventListener('click', function (e) {
-  const uploadModal = document.getElementById('upload-modal');
-  const form = document.getElementById('upload-form');
-  const closeButton = document.querySelector('#upload-modal .close');
-  closeButton.addEventListener('click', function () {
-    form.reset();
-    uploadModal.style.display = 'none';
-  });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const formData = new FormData(form);
-    const data = {};
-    for (const [key, value] of formData.entries()) {
-      if (key === 'tags') {
-        data[key] = value.includes(',')
-          ? value.split(',').map((item) => item.trim().toLowerCase())
-          : value.includes(' ')
-            ? value.split(' ').map((item) => item.trim().toLowerCase())
-            : value ? [value] : []; // feels hacky
-      } else {
-        data[key] = value;
-      }
+const uploadModal = document.getElementById('upload-modal');
+const uploadForm = document.getElementById('upload-form');
+document.querySelector('#upload-modal .close').addEventListener('click', function () {
+  closeForm(uploadForm, uploadModal);
+});
+uploadForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const formData = new FormData(uploadForm);
+  const data = {};
+  for (const [key, value] of formData.entries()) {
+    if (key === 'tags') {
+      data[key] = value.includes(',')
+        ? value.split(',').map((item) => item.trim().toLowerCase())
+        : value.includes(' ')
+          ? value.split(' ').map((item) => item.trim().toLowerCase())
+          : value ? [value] : []; // feels hacky
+    } else if (key === 'images') {
+      data[key] = formData.getAll('images').filter((item) => item.name);
+    } else {
+      data[key] = value;
     }
-    db.push(new DbItem(data));
-    form.reset();
-    uploadModal.classList.remove('show');
-    uploadModal.style.display = 'none';
-  });
+  }
+  db.push(new DbItem(data));
+  closeForm(uploadForm, uploadModal);
+});
+document.getElementById('upload')?.addEventListener('click', function (e) {
   uploadModal.style.display = 'block';
 });
 
