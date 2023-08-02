@@ -318,6 +318,9 @@ document.querySelector('.user-menu #logout')?.addEventListener('click', function
     console.error(error);
   });
 });
+document.querySelector('.user-menu #profile')?.addEventListener('click', function (e) {
+  window.location.href = '/profile';
+});
 const uploadModal = document.getElementById('upload-modal');
 const uploadForm = document.getElementById('upload-form');
 document.querySelector('#upload-modal .close').addEventListener('click', function () {
