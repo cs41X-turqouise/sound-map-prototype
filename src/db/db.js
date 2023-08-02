@@ -93,6 +93,7 @@ export class DbItem {
       user = `user${randNum()}`,
       date = randDate(),
       file = randSound(),
+      image = null,
       artist = randName(),
       title = file instanceof File ? file.name : file.split('/').pop(),
       description = '...description of the sound',
@@ -103,6 +104,7 @@ export class DbItem {
     this.user = user;
     this.date = date;
     this.file = file;
+    this.image = image;
     this.artist = artist;
     this.title = title;
     this.description = description;
@@ -138,6 +140,7 @@ export const db = [];
     date: randDate(),
     title: 'Hello World!',
     file: '../assets/waves-crashing.wav',
+    image: '../assets/sea.jpg',
     latlng: [36.88546327183475, -76.30592151771837],
   },
   {
@@ -152,6 +155,7 @@ export const db = [];
     date: randDate(),
     title: 'Test3',
     file: '../assets/waves-crashing.wav',
+    image: ['../assets/sea.jpg', '../assets/default-avatar.png'],
     latlng: [36.69912, -76.22452],
   },
   {
@@ -159,6 +163,7 @@ export const db = [];
     date: randDate(),
     title: 'Test4',
     file: '../assets/waves-crashing.wav',
+    image: '../assets/sea.jpg',
     latlng: [37.01996, -76.32751],
   },
 ].forEach((item) => {

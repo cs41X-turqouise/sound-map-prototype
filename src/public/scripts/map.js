@@ -57,6 +57,7 @@ function createListItem (list, popup) {
   const distance = popup?.distance?.toFixed(2) || 0;
 
   const listItem = document.createElement('li');
+  // popup.image = popup.image || '../assets/sea.jpg';
   listItem.innerHTML = (
     `<b class="name">${popup.title}</b> (<span class="distance">${distance}</span> m)<br>`
     + `Date: <span class="date">${popup.date?.toLocaleDateString()}</span><br>`
@@ -65,7 +66,12 @@ function createListItem (list, popup) {
     + `<div class="description-container">`
     + `<p class="description">${popup.description}</p>`
     + `</div>`
-    // todo - tags
+    + (popup.image
+        ? Array.isArray(popup.image)
+          ? `<div class="slideshow-container"></div>`
+          : `<img class="image" src=${popup.image}><br>`
+          : ''
+    )
     + `Tags: <span class="tags">${popup.tags}</span><br>`
     + `<div class="sound-bar" data-file="${popup.file}">`
     + `<button class="play-button">▶️</button>`
@@ -74,6 +80,52 @@ function createListItem (list, popup) {
     + `</div>`
   );
   list.appendChild(listItem);
+  // listItem.style.backgroundImage = `url(${popup.image})`; // TODO: fix this
+
+  if (popup.image && Array.isArray(popup.image)) {
+    const slideshowContainer = listItem.querySelector('.slideshow-container');
+    let currentSlide = 0;
+    const prev = document.createElement('a');
+    prev.innerHTML = '&#10094;';
+    prev.classList.add('prev');
+    prev.onclick = (e) => {
+      e.stopPropagation();
+      const slides = slideshowContainer.querySelectorAll('.slide');
+      currentSlide === 0
+        ? (currentSlide = slides.length - 1)
+        : currentSlide--;
+      slides.forEach((slide, index) => {
+        slide.style.display = index === currentSlide ? 'block' : 'none';
+      });
+    };
+    const next = document.createElement('a');
+    next.innerHTML = '&#10095;';
+    next.classList.add('next');
+    next.onclick = (e) => {
+      e.stopPropagation();
+      const slides = slideshowContainer.querySelectorAll('.slide');
+      currentSlide === slides.length - 1
+        ? (currentSlide = 0)
+        : currentSlide++;
+      slides.forEach((slide, index) => {
+        slide.style.display = index === currentSlide ? 'block' : 'none';
+      });
+    };
+    slideshowContainer.appendChild(prev);
+    slideshowContainer.appendChild(next);
+    popup.image.forEach((image, index) => {
+      const slide = document.createElement('div');
+      slide.classList.add('slide');
+      slide.id = `slide-${index}`;
+      slide.style.display = index === 0 ? 'block' : 'none';
+
+      const img = document.createElement('img');
+      img.classList.add('image');
+      img.src = image;
+      slide.appendChild(img);
+      slideshowContainer.appendChild(slide);
+    });
+  }
 
   const playButton = listItem.querySelector('.play-button');
   const soundBar = listItem.querySelector('.sound-bar');
@@ -146,20 +198,23 @@ const hideSidebar = function () {
   }
 };
 
-const dropdown = document.getElementById('dropbtn-search');
-const form = document.getElementById('search-form');
-const searchModal = document.getElementById('search-modal');
-const closeButton = document.querySelector('#search-modal .close');
-const closeForm = function () {
+/**
+ * @param {HTMLFormElement} form
+ * @param {HTMLElement} modal
+ */
+const closeForm = function (form, modal) {
   form.reset();
-  searchModal.style.display = 'none';
+  modal.style.display = 'none';
 };
-closeButton.addEventListener('click', function (e) {
-  closeForm();
+const dropdown = document.getElementById('dropbtn-search');
+const searchForm = document.getElementById('search-form');
+const searchModal = document.getElementById('search-modal');
+document.querySelector('#search-modal .close').addEventListener('click', function (e) {
+  closeForm(searchForm, searchModal);
 });
-form.addEventListener('submit', function (e) {
+searchForm.addEventListener('submit', function (e) {
   e.preventDefault();
-  const formData = new FormData(form);
+  const formData = new FormData(searchForm);
   /**
    * @type {{
    * title: string,
@@ -213,7 +268,7 @@ form.addEventListener('submit', function (e) {
     }
     return true;
   });
-  closeForm();
+  closeForm(searchForm, searchModal);
   if (!filteredData.length) {
     console.log('No results found.');
     return;
@@ -262,34 +317,32 @@ document.querySelector('.user-menu #logout')?.addEventListener('click', function
     console.error(error);
   });
 });
-document.getElementById('upload')?.addEventListener('click', function (e) {
-  const uploadModal = document.getElementById('upload-modal');
-  const form = document.getElementById('upload-form');
-  const closeButton = document.querySelector('#upload-modal .close');
-  closeButton.addEventListener('click', function () {
-    form.reset();
-    uploadModal.style.display = 'none';
-  });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const formData = new FormData(form);
-    const data = {};
-    for (const [key, value] of formData.entries()) {
-      if (key === 'tags') {
-        data[key] = value.includes(',')
-          ? value.split(',').map((item) => item.trim().toLowerCase())
-          : value.includes(' ')
-            ? value.split(' ').map((item) => item.trim().toLowerCase())
-            : value ? [value] : []; // feels hacky
-      } else {
-        data[key] = value;
-      }
+const uploadModal = document.getElementById('upload-modal');
+const uploadForm = document.getElementById('upload-form');
+document.querySelector('#upload-modal .close').addEventListener('click', function () {
+  closeForm(uploadForm, uploadModal);
+});
+uploadForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const formData = new FormData(uploadForm);
+  const data = {};
+  for (const [key, value] of formData.entries()) {
+    if (key === 'tags') {
+      data[key] = value.includes(',')
+        ? value.split(',').map((item) => item.trim().toLowerCase())
+        : value.includes(' ')
+          ? value.split(' ').map((item) => item.trim().toLowerCase())
+          : value ? [value] : []; // feels hacky
+    } else if (key === 'images') {
+      data[key] = formData.getAll('images').filter((item) => item.name);
+    } else {
+      data[key] = value;
     }
-    db.push(new DbItem(data));
-    form.reset();
-    uploadModal.classList.remove('show');
-    uploadModal.style.display = 'none';
-  });
+  }
+  db.push(new DbItem(data));
+  closeForm(uploadForm, uploadModal);
+});
+document.getElementById('upload')?.addEventListener('click', function (e) {
   uploadModal.style.display = 'block';
 });
 
@@ -333,12 +386,9 @@ document.getElementById('sidebar-close').addEventListener('click', function () {
 });
 
 for (const marker of db) {
+  /** @type {L.Popup} */
   const popup = L.marker(marker.latlng)
-      .addTo(map)
-      .bindPopup(
-          `<b>${marker.title}</b><br>`
-          + `Date: ${marker.date.toLocaleDateString()}`
-      );
+      .addTo(map);
   popup.on('click', function (e) {
     console.log('popup clicked');
     const popupList = document.getElementById('popup-list');
