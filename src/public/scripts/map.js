@@ -67,10 +67,10 @@ function createListItem (list, popup) {
     + `<p class="description">${popup.description}</p>`
     + `</div>`
     + (popup.image
-        ? Array.isArray(popup.image)
-          ? `<div class="slideshow-container"></div>`
-          : `<img class="image" src=${popup.image}><br>`
-          : ''
+      ? Array.isArray(popup.image)
+        ? `<div class="slideshow-container"></div>`
+        : `<img class="image" src=${popup.image}><br>`
+      : ''
     )
     + `Tags: <span class="tags">${popup.tags}</span><br>`
     + `<div class="sound-bar" data-file="${popup.file}">`
@@ -206,7 +206,6 @@ const closeForm = function (form, modal) {
   form.reset();
   modal.style.display = 'none';
 };
-const dropdown = document.getElementById('dropbtn-search');
 const searchForm = document.getElementById('search-form');
 const searchModal = document.getElementById('search-modal');
 document.querySelector('#search-modal .close').addEventListener('click', function (e) {
@@ -284,6 +283,8 @@ searchForm.addEventListener('submit', function (e) {
   });
   showSidebar();
 });
+
+const dropdown = document.getElementById('dropbtn-search');
 dropdown.addEventListener('click', function (e) {
   searchModal.style.display = 'block';
 });
@@ -348,9 +349,9 @@ document.getElementById('upload')?.addEventListener('click', function (e) {
 
 map.on('click', (e) => {
   L.popup()
-      .setLatLng(e.latlng)
-      .setContent(`You clicked the map at ${e.latlng.toString()}`)
-      .openOn(map);
+    .setLatLng(e.latlng)
+    .setContent(`You clicked the map at ${e.latlng.toString()}`)
+    .openOn(map);
   const clickedLatLng = e.latlng;
 
   const popups = db.map(function (popup) {
@@ -369,6 +370,7 @@ map.on('click', (e) => {
   popups.forEach(function (popup) {
     createListItem(popupList, popup);
   });
+  sidebar.style.bottom = '0';
 
   showSidebar();
 });
@@ -388,7 +390,7 @@ document.getElementById('sidebar-close').addEventListener('click', function () {
 for (const marker of db) {
   /** @type {L.Popup} */
   const popup = L.marker(marker.latlng)
-      .addTo(map);
+    .addTo(map);
   popup.on('click', function (e) {
     console.log('popup clicked');
     const popupList = document.getElementById('popup-list');
@@ -396,5 +398,6 @@ for (const marker of db) {
     createListItem(popupList, marker);
     const sidebar = document.getElementById('sidebar');
     sidebar.classList.add('show');
+    sidebar.style.bottom = 'auto';
   });
 }

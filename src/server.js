@@ -17,17 +17,17 @@ const {
 } = process.env;
 
 passport.use(
-    new GoogleStrategy(
-        {
-          clientID: GOOGLE_CLIENT_ID,
-          clientSecret: GOOGLE_CLIENT_SECRET,
-          callbackURL: `${DEV_BASE_URL}/auth/google/callback`
-        },
-        function (accessToken, refreshToken, profile, done) {
-          const user = { googleId: profile.id, email: profile.emails[0].value };
-          return done(null, user);
-        }
-    )
+  new GoogleStrategy(
+    {
+      clientID: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      callbackURL: `${DEV_BASE_URL}/auth/google/callback`
+    },
+    function (accessToken, refreshToken, profile, done) {
+      const user = { googleId: profile.id, email: profile.emails[0].value };
+      return done(null, user);
+    }
+  )
 );
 
 passport.serializeUser(function (user, done) {
@@ -53,8 +53,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Setup view engine
-app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
 // Serve static files from the public folder
 app.use(express.static(__dirname + '/public'));
 // Serve the db.js file
@@ -67,15 +67,15 @@ app.get('/', function (req, res) {
 
 // Route that starts the Google OAuth process
 app.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] })
+  passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
 app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
-    function (req, res) {
-      console.log('user', req.user);
-      res.redirect('/');
-    }
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function (req, res) {
+    console.log('user', req.user);
+    res.redirect('/');
+  }
 );
 
 // Route that renders the login page
@@ -88,7 +88,7 @@ app.get('/test', function (req, res) {
     res.redirect('/');
   } else {
     res.send(
-        `<div>`
+      `<div>`
       + `<h1>Hello ${req.user.email}</h1>`
       + `<a href="/logout">Logout</a>`
       + `<span> | </span>`
@@ -114,29 +114,29 @@ app.use(function (req, res, next) {
 });
 
 app.use(
-    /**
-     * Handle errors
-     * @param {import('express').ErrorRequestHandler} err
-     * @param {import('express').Request} req
-     * @param {import('express').Response} res
-     * @param {import('express').NextFunction} next
-     */
-    function (err, req, res, next) {
-      // Set locals, only providing error in development
-      res.locals.message = err.message;
-      res.locals.error = req.app.get('env') === 'development' ? err : {};
+  /**
+   * Handle errors
+   * @param {import('express').ErrorRequestHandler} err
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  function (err, req, res, next) {
+    // Set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-      // Render the error page
-      res
-          .status(err.status || 500)
-          .send(
-              `<div>`
-            + `<h1>Error ${res.statusCode}</h1>`
-            + `<p>${err.message}</p>`
-            + `<a href="/">Home</a>`
-            + `</div>`
-          );
-    }
+    // Render the error page
+    res
+      .status(err.status || 500)
+      .send(
+        `<div>`
+        + `<h1>Error ${res.statusCode}</h1>`
+        + `<p>${err.message}</p>`
+        + `<a href="/">Home</a>`
+        + `</div>`
+      );
+  }
 );
 
 // Start the server on port
