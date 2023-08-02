@@ -34,7 +34,12 @@ The server should now be running at http://localhost:3000.
 To use the application, navigate to http://localhost:3000 in your web browser. Click the "Login with Google" button to log in with your Google account. After logging in, you should see a personalized greeting message with your email address.
 <br>
 
-![home-page](https://github.com/cs41X-turqouise/sound-map-prototype/assets/60308670/33bb1757-cf80-4a0d-a846-722dda0aff42)
+![Home-Page](https://github.com/cs41X-turqouise/sound-map-prototype/assets/60308670/c23291af-6eff-458f-a76e-f0dc97c831a0)
+![Sidebar-All](https://github.com/cs41X-turqouise/sound-map-prototype/assets/60308670/1e7ed63f-c4c1-47ef-bad0-2ecfd8261a8d)
+![Sidebar-Single](https://github.com/cs41X-turqouise/sound-map-prototype/assets/60308670/a494787f-0656-45ef-b32f-6ec93b8ffac1)
+![Guest-View](https://github.com/cs41X-turqouise/sound-map-prototype/assets/60308670/a8559e7e-2a00-4179-a060-877862ecbe43)
+![Upload-Modal](https://github.com/cs41X-turqouise/sound-map-prototype/assets/60308670/ac378045-2cf0-4199-9c92-8a05a684cdba)
+![Search-Modal](https://github.com/cs41X-turqouise/sound-map-prototype/assets/60308670/d2807bc2-755e-47fa-a4e4-fb51db013499)
 
 
 # License
