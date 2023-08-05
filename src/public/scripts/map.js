@@ -58,9 +58,6 @@ map.zoomControl.setPosition('bottomright');
 L.control.locate({ position: 'bottomright' }).addTo(map);
 const coordinatesControl = new CoordinatesControl().setPosition('topleft').addTo(map);
 
-/** @type {HTMLAudioElement} */
-let currentAudio = null;
-
 /**
  * @param {HTMLElement} list
  * @param {PopUp} popup
@@ -140,7 +137,9 @@ function createListItem (list, popup) {
   }
 
   const soundBar = listItem.querySelector('.sound-bar');
-  const audio = new Audio(popup.file instanceof File ? URL.createObjectURL(popup.file) : popup.file);
+  const audio = new Audio(popup.file instanceof File
+    ? URL.createObjectURL(popup.file)
+    : popup.file);
   const audioBar = soundBar.querySelector('audio');
   const audioSource = audioBar.querySelector('source');
   audioSource.type = `audio/${popup.fileType}`;
@@ -162,10 +161,6 @@ const showSidebar = function () {
 const hideSidebar = function () {
   const sidebar = document.getElementById('sidebar');
   sidebar.classList.remove('show');
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio = null;
-  }
 };
 
 /**
@@ -348,7 +343,14 @@ map.on('click', (e) => {
 });
 
 // kinda like this, kinda don't
-const centerMarker = L.marker(map.getCenter()).addTo(map);
+const myIcon = L.icon({
+  iconUrl: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
+  // iconUrl: 'https://cdn0.iconfinder.com/data/icons/map-location-solid-style/91/Map_-_Location_Solid_Style_06-512.png',
+  iconSize: [38, 38],
+  iconAnchor: [19, 38],
+  popupAnchor: [0, -38]
+});
+const centerMarker = L.marker(map.getCenter(), { icon: myIcon }).addTo(map);
 
 map.on('move', function (e) {
   const center = map.getCenter();
