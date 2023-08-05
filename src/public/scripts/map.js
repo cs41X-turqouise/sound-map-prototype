@@ -39,12 +39,24 @@ const views = {
   })),
 };
 
+const CoordinatesControl = L.Control.extend({
+  onAdd: function (map) {
+    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+    container.style.backgroundColor = 'white';
+    container.style.padding = '5px';
+    container.style.marginRight = '10px';
+    container.innerHTML = 'Center: ' + map.getCenter().lat.toFixed(4) + ', ' + map.getCenter().lng.toFixed(4);
+    return container;
+  }
+});
+
 // set inital view
 views.osm.addTo(map);
 L.control.scale().addTo(map);
 L.control.layers(views, null, { position: 'bottomleft' }).addTo(map);
 map.zoomControl.setPosition('bottomright');
 L.control.locate({ position: 'bottomright' }).addTo(map);
+const coordinatesControl = new CoordinatesControl().setPosition('topleft').addTo(map);
 
 /** @type {HTMLAudioElement} */
 let currentAudio = null;
@@ -130,7 +142,6 @@ function createListItem (list, popup) {
   const soundBar = listItem.querySelector('.sound-bar');
   const audio = new Audio(popup.file instanceof File ? URL.createObjectURL(popup.file) : popup.file);
   const audioBar = soundBar.querySelector('audio');
-
   const audioSource = audioBar.querySelector('source');
   audioSource.type = `audio/${popup.fileType}`;
   audioSource.src = audio.src;
@@ -310,17 +321,16 @@ document.getElementById('upload')?.addEventListener('click', function (e) {
 });
 
 map.on('click', (e) => {
-  L.popup()
-    .setLatLng(e.latlng)
-    .setContent(`You clicked the map at ${e.latlng.toString()}`)
-    .openOn(map);
   const clickedLatLng = e.latlng;
-
+  // maybe paginate? For now hardcoded range
+  const range = 1e6;
   const popups = db.map(function (popup) {
     const popupLatLng = L.latLng(popup.latlng);
     const distance = clickedLatLng.distanceTo(popupLatLng);
     popup.distance = distance;
     return popup;
+  }).filter(function (popup) {
+    return popup.distance < range;
   });
 
   popups.sort(function (a, b) {
@@ -337,12 +347,13 @@ map.on('click', (e) => {
   showSidebar();
 });
 
-map.on('popupopen', function () {
-  showSidebar();
-});
+// kinda like this, kinda don't
+const centerMarker = L.marker(map.getCenter()).addTo(map);
 
-map.on('popupclose', function () {
-  hideSidebar();
+map.on('move', function (e) {
+  const center = map.getCenter();
+  centerMarker.setLatLng(center);
+  coordinatesControl.getContainer().innerHTML = 'Center: ' + center.lat.toFixed(4) + ', ' + center.lng.toFixed(4);
 });
 
 document.getElementById('sidebar-close').addEventListener('click', function () {
