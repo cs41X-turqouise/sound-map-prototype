@@ -16,6 +16,22 @@ const {
   DEV_BASE_URL,
 } = process.env;
 
+// TODO - Integrate with MongoDB using Mongoose
+
+/**
+ * Callback Function - Not used currently
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {void}
+ */
+// const ensureAuthenticated = (req, res, next) => {
+//   if (req.isAuthenticated()) {
+//     return next();
+//   }
+//   res.redirect('/');
+// };
+
 passport.use(
   new GoogleStrategy(
     {
@@ -63,6 +79,10 @@ app.use('/db', express.static(path.join(__dirname, 'db')));
 // Route that renders the home page
 app.get('/', function (req, res) {
   res.render('index', { user: req?.user?.email });
+});
+
+app.get('/profile', function (req, res) {
+  res.render('profile', { user: req.user });
 });
 
 // Route that starts the Google OAuth process
