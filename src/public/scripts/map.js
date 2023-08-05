@@ -74,9 +74,9 @@ function createListItem (list, popup) {
     )
     + `Tags: <span class="tags">${popup.tags}</span><br>`
     + `<div class="sound-bar" data-file="${popup.file}">`
-    + `<button class="play-button">▶️</button>`
-    + `<div class="progress-bar"></div>`
-    + `<div class="duration-label"></div>`
+    + `<audio class="audio" controls>`
+    + `<source src="" type="audio/*">`
+    + `</audio>`
     + `</div>`
   );
   list.appendChild(listItem);
@@ -127,11 +127,13 @@ function createListItem (list, popup) {
     });
   }
 
-  const playButton = listItem.querySelector('.play-button');
   const soundBar = listItem.querySelector('.sound-bar');
-  const progressBar = soundBar.querySelector('.progress-bar');
-  const durationLabel = soundBar.querySelector('.duration-label');
   const audio = new Audio(popup.file instanceof File ? URL.createObjectURL(popup.file) : popup.file);
+  const audioBar = soundBar.querySelector('audio');
+
+  const audioSource = audioBar.querySelector('source');
+  audioSource.type = `audio/${popup.fileType}`;
+  audioSource.src = audio.src;
 
   listItem.addEventListener('click', function (e) {
     map.setView(popup.latlng, 10);
@@ -139,49 +141,6 @@ function createListItem (list, popup) {
     if (activeListItem) activeListItem.classList.remove('active');
     listItem.classList.add('active');
   });
-
-  playButton.addEventListener('click', function (e) {
-    if (audio.paused) {
-      if (currentAudio) {
-        currentAudio.pause();
-      }
-      currentAudio = audio;
-      audio.play();
-      playButton.textContent = '⏸️';
-    } else {
-      audio.pause();
-      playButton.textContent = '▶️';
-    }
-  });
-
-  audio.addEventListener('timeupdate', function () {
-    const progress = (audio.currentTime / audio.duration) * 100;
-    progressBar.style.width = `${progress}%`;
-    const duration = formatTime(audio.duration);
-    const currentTime = formatTime(audio.currentTime);
-    durationLabel.textContent = `${currentTime} / ${duration}`;
-  });
-
-  audio.addEventListener('ended', function () {
-    playButton.textContent = '▶️';
-    progressBar.style.width = '0%';
-    durationLabel.textContent = `0:00 / ${formatTime(audio.duration)}`;
-  });
-
-  audio.addEventListener('loadedmetadata', function () {
-    const duration = formatTime(audio.duration);
-    durationLabel.textContent = `0:00 / ${duration}`;
-  });
-
-  /**
-   * @param {number} time
-   * @return {string}
-   */
-  function formatTime (time) {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  }
 };
 
 const showSidebar = function () {
