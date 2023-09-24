@@ -1,0 +1,13 @@
+name: CI - build and test
+
+on:                                
+  push:
+    branches: [ main ]
+
+jobs:
+  build:                           
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2                   ➀
+      with:
+        fetch-depth: 0
